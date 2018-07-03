@@ -1,43 +1,74 @@
 <template>
-  <div class="container" @click="clickHandle('test click', $event)">
-
-    <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
-      <div class="userinfo-nickname">
-        <card :text="userInfo.nickName"></card>
-      </div>
-    </div>
-
-    <div class="usermotto">
-      <div class="user-motto">
-        <card :text="motto"></card>
-      </div>
-    </div>
-
-    <form class="form-container">
-      <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
-    </form>
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
+  <div>
+    <swiper :indicator-dots="indicatorDots"
+      :autoplay="autoplay" :interval="interval" :duration="duration" indicator-color="rgba(255, 255, 255, .3)" indicator-active-color="#fff" style="height: 350rpx;">
+      <block v-for="(item, index) in swipers" :key="index">
+        <swiper-item>
+          <image :src="item.url" class="slide-image"/>
+        </swiper-item>
+      </block>
+    </swiper>
+    <goods-list :goodsData="goodsData" :hasMore="hasMore"></goods-list>
   </div>
 </template>
 
 <script>
-import card from '@/components/card'
-
+import fetch from '@/utils/fetch'
+import goodsList from '@/components/goodsList'
 export default {
   data () {
     return {
-      motto: 'Hello World',
+      swipers: [{
+        url: '/static/images/swiper_1.png'
+      }, {
+        url: '/static/images/swiper_2.png'
+      }, {
+        url: '/static/images/swiper_3.png'
+      }],
+      indicatorDots: true,
+      autoplay: true,
+      interval: 5000,
+      duration: 1000,
+      hasMore: true,
+      page: 1,
+      num: 8,
+      goodsData: [],
       userInfo: {}
     }
   },
-
   components: {
-    card
+    goodsList
   },
-
   methods: {
+    init () {
+      this.loadMore()
+    },
+    getGoods () {
+      fetch('goods/get', {
+        page: this.page,
+        num: this.num
+      })
+    },
+    loadMore () {
+      if (!this.hasMore) return
+
+      wx.showLoading({ title: '拼命加载中...' })
+      return fetch('goods/get', {
+        page: this.page++,
+        num: this.num
+      }).then(r => {
+        let data = r.data.data
+        if (data.length) {
+          this.goodsData.push(...data)
+        } else {
+          this.hasMore = false
+        }
+        wx.hideLoading()
+      }).catch(e => {
+        console.error(e)
+        wx.hideLoading()
+      })
+    },
     bindViewTap () {
       const url = '../logs/main'
       wx.navigateTo({ url })
@@ -58,15 +89,34 @@ export default {
       console.log('clickHandle:', msg, ev)
     }
   },
-
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh () {
+    this.goodsData = []
+    this.hasMore = true
+    this.page = 1
+    this.loadMore()
+      .then(() => wx.stopPullDownRefresh())
+  },
+  onReachBottom () {
+    this.loadMore()
+  },
   created () {
     // 调用应用实例的方法获取全局数据
-    this.getUserInfo()
+    this.init()
   }
 }
 </script>
 
 <style scoped>
+.slide-image {
+  width: 100%;
+  height: 100%;
+}
+.col-12 {
+  width: 50%;
+}
 .userinfo {
   display: flex;
   flex-direction: column;

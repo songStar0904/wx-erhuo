@@ -14,9 +14,25 @@ export default {
     pages: ['pages/logs/main', '^pages/index/main'],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarBackgroundColor: '#19be6b',
+      navigationBarTitleText: '二 货',
+      navigationBarTextStyle: '#fff'
+    },
+    tabBar: {
+      selectedColor: '#19be6b',
+      borderStyle: 'white',
+      backgroundColor: '#fff',
+      list: [{
+        pagePath: 'pages/index/main',
+        text: '首页',
+        iconPath: 'static/images/home.png',
+        selectedIconPath: 'static/images/home_s.png'
+      }, {
+        pagePath: 'pages/logs/main',
+        text: '我的',
+        iconPath: 'static/images/my.png',
+        selectedIconPath: 'static/images/my_s.png'
+      }]
     }
   }
 }
