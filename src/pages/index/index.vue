@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { formatTime } from '@/utils/index'
 import fetch from '@/utils/fetch'
 import goodsList from '@/components/goodsList'
 export default {
@@ -59,6 +60,7 @@ export default {
       }).then(r => {
         let data = r.data.data
         if (data.length) {
+          data = this.formatTime(data)
           this.goodsData.push(...data)
         } else {
           this.hasMore = false
@@ -68,6 +70,12 @@ export default {
         console.error(e)
         wx.hideLoading()
       })
+    },
+    formatTime (data) {
+      data.forEach(item => {
+        item.goods_time = formatTime(item.goods_time)
+      })
+      return data
     },
     bindViewTap () {
       const url = '../logs/main'

@@ -1,4 +1,4 @@
-const api = 'http://api.erhuo.com'
+const api = 'http://api.songstar.cn/api'
 export function fetch (path, params) {
   return new Promise((resolve, reject) => {
     wx.request({

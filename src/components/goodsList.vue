@@ -1,14 +1,17 @@
 <template>
   <div class="list">	
 	  <div class="card col-12" v-for="(goods, index) in goodsData" :key="index">
-	      <img :src="'http://api.erhuo.com' + goods.goods_icon[0].url" alt="">
-	      <div class="title">
+	  	<div class="img">
+	      <img :src="'http://api.songstar.cn' + goods.goods_icon[0].url" alt="">
+	      <p></p>
+	    </div>
+	      <div class="title clearfix">
 	      	<p class="price">
 	      		<span class="nprice">￥{{goods.goods_nprice}}</span>
 	      		<span class="oprice">￥{{goods.goods_oprice}}</span>
 	      	</p>
-	      	<span class="name">{{goods.goods_name}}</span>
-	      	<span class="name">{{formatTime(goods.goods_time)}}</span>
+	      	<span class="name fr">{{goods.goods_name}}</span>
+	      	<span class="name fl">{{goods.goods_time}}</span>
 	      </div>
 	  </div>
 	  <div class="center">
@@ -19,15 +22,8 @@
 </template>
 
 <script>
-import { formatTime } from '@/utils/index'
 export default {
-  props: ['goodsData', 'hasMore'],
-  methods: {
-    formatTime (date) {
-      console.log(formatTime(date))
-      return formatTime(date)
-    }
-  }
+  props: ['goodsData', 'hasMore']
 }
 </script>
 
@@ -69,7 +65,6 @@ export default {
 }
 .title .name {
 	display: inline-block;
-	width: 50%;
 	font-size: 25rpx;
 	overflow: hidden;
 	text-overflow:ellipsis;
