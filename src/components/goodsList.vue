@@ -1,19 +1,19 @@
 <template>
-  <div class="list">	
-	  <div class="card col-12" v-for="(goods, index) in goodsData" :key="index">
-	  	<div class="img">
-	      <img :src="'http://api.songstar.cn' + goods.goods_icon[0].url" alt="">
-	      <p></p>
-	    </div>
-	      <div class="title clearfix">
-	      	<p class="price">
-	      		<span class="nprice">￥{{goods.goods_nprice}}</span>
-	      		<span class="oprice">￥{{goods.goods_oprice}}</span>
-	      	</p>
-	      	<span class="name fr">{{goods.goods_name}}</span>
-	      	<span class="name fl">{{goods.goods_time}}</span>
-	      </div>
-	  </div>
+  <div class="list">
+  	<navigator class="card col-12" v-for="(goods, index) in goodsData" :key="index" :url="'/pages/goodsItem/main?id=' + goods.goods_id">
+  	  <div class="img">
+        <img :src="'http://api.songstar.cn' + goods.goods_icon[0].url" alt="">
+        <p></p>
+      </div>
+      <div class="title clearfix">
+      	<p class="price">
+      		<span class="nprice">￥{{goods.goods_nprice}}</span>
+      		<span class="oprice">￥{{goods.goods_oprice}}</span>
+      	</p>
+      	<span class="name fl">{{goods.goods_name}}</span>
+      	<span class="fr">{{goods.goods_time}}</span>
+      </div>
+	 </navigator>
 	  <div class="center">
 	  	<p v-if="hasMore">玩命加载中。。。</p>
 	    <p v-else>没有更多内容了</p>	
@@ -27,14 +27,7 @@ export default {
 }
 </script>
 
-<style>
-.card {
-    border: 1px solid #dddee1;
-    border-color: #e9eaec;
-    background: #fff;
-    border-radius: 4rpx;
-    font-size: 14rpx;
-}
+<style scoped>
 .card img {
 	width: 100%;
 	height: 300rpx;
@@ -52,7 +45,7 @@ export default {
 }
 .title{
 	padding: 20rpx;
-	font-size: 20rpx;
+	font-size: 25rpx;
 }
 .title .nprice{
 	font-size: 35rpx;
@@ -64,8 +57,8 @@ export default {
 	text-decoration: line-through;
 }
 .title .name {
+	width: 70%;
 	display: inline-block;
-	font-size: 25rpx;
 	overflow: hidden;
 	text-overflow:ellipsis;
 	white-space: nowrap;

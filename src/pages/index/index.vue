@@ -44,12 +44,6 @@ export default {
     init () {
       this.loadMore()
     },
-    getGoods () {
-      fetch('goods/get', {
-        page: this.page,
-        num: this.num
-      })
-    },
     loadMore () {
       if (!this.hasMore) return
 
@@ -118,10 +112,6 @@ export default {
 </script>
 
 <style scoped>
-.slide-image {
-  width: 100%;
-  height: 100%;
-}
 .col-12 {
   width: 50%;
 }
