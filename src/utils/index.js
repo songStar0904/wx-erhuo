@@ -1,3 +1,4 @@
+import schoolData from './school.js'
 function formatNumber (n) {
   const str = n.toString()
   return str[1] ? str : `0${str}`
@@ -60,8 +61,18 @@ export function formatTime (timestamp) {
   }
   return '刚刚'
 }
-
+export function formatSchool (sid) {
+  for (let val in schoolData) {
+    for (let i = 0; i < schoolData[val].length; i++) {
+      if (sid === Number(schoolData[val][i].id)) {
+        return schoolData[val][i].name
+      }
+    }
+  }
+  return sid
+}
 export default {
   formatNumber,
-  formatTime
+  formatTime,
+  formatSchool
 }

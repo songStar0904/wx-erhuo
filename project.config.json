@@ -35,7 +35,7 @@
 					"id": 0,
 					"name": "商品单页",
 					"pathName": "pages/goodsItem/main",
-					"query": "id=42"
+					"query": "id=3"
 				}
 			]
 		}
