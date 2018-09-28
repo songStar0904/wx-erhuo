@@ -14,16 +14,12 @@
       	<span class="fr">{{goods.goods_time}}</span>
       </div>
 	 </navigator>
-	  <div class="center">
-	  	<p v-if="hasMore">玩命加载中。。。</p>
-	    <p v-else>没有更多内容了</p>	
-	  </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['goodsData', 'hasMore']
+  props: ['goodsData']
 }
 </script>
 

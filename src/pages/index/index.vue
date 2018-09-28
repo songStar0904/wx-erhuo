@@ -8,7 +8,8 @@
         </swiper-item>
       </block>
     </swiper>
-    <goods-list :goodsData="goodsData" :hasMore="hasMore"></goods-list>
+    <goods-list :goodsData="goodsData"></goods-list>
+    <i-load-more :tip="hasMore ? '玩命加载中' : '暂无数据'" :loading="hasMore" />
   </div>
 </template>
 

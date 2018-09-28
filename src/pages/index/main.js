@@ -6,6 +6,9 @@ app.$mount()
 
 export default {
   config: {
-    enablePullDownRefresh: true
+    enablePullDownRefresh: true,
+    usingComponents: {
+      'i-load-more': '/static/iview/load-more/index'
+    }
   }
 }
