@@ -1,11 +1,6 @@
-.fr {
-	float: right;
-}
-.fl {
-	float: left;
-}
-.clearfix {
-	overflow: hidden;
+.flex-sb{
+	display: flex;
+	justify-content: space-between;
 }
 .slide-image {
   width: 100%;

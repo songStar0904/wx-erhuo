@@ -9,13 +9,12 @@
       </block>
     </swiper>
     <goods-list :goodsData="goodsData"></goods-list>
-    <i-load-more :tip="hasMore ? '玩命加载中' : '暂无数据'" :loading="hasMore" />
+    <i-load-more :tip="loading ? '玩命加载中' : '暂无数据'" :loading="loading" />
   </div>
 </template>
 
 <script>
 import { formatTime } from '@/utils/index'
-import fetch from '@/utils/fetch'
 import goodsList from '@/components/goodsList'
 export default {
   data () {
@@ -32,7 +31,8 @@ export default {
       interval: 5000,
       duration: 1000,
       hasMore: true,
-      page: 1,
+      loading: false,
+      page: 0,
       num: 8,
       goodsData: [],
       userInfo: {}
@@ -43,32 +43,41 @@ export default {
   },
   methods: {
     init () {
+      wx.cloud.init({
+        traceUser: true
+      })
       this.loadMore()
     },
     loadMore () {
       if (!this.hasMore) return
-
-      wx.showLoading({ title: '拼命加载中...' })
-      return fetch('goods/get', {
-        page: this.page++,
-        num: this.num
-      }).then(r => {
-        let data = r.data.data
+      this.loading = true
+      wx.cloud.callFunction({
+        // 云函数名称
+        name: 'getGoods',
+        // 传给云函数的参数
+        data: {
+          page: this.page++,
+          num: this.num
+        }
+      }).then(res => {
+        let data = res.result.data
+        console.log(res.result)
+        this.loading = false
+        wx.stopPullDownRefresh()
         if (data.length) {
           data = this.formatTime(data)
           this.goodsData.push(...data)
         } else {
           this.hasMore = false
         }
-        wx.hideLoading()
-      }).catch(e => {
-        console.error(e)
-        wx.hideLoading()
+      }).catch(res => {
+        this.loading = false
+        console.log(res)
       })
     },
     formatTime (data) {
       data.forEach(item => {
-        item.goods_time = formatTime(item.goods_time)
+        item.date = formatTime(new Date(item.date).getTime())
       })
       return data
     },
@@ -98,9 +107,8 @@ export default {
   onPullDownRefresh () {
     this.goodsData = []
     this.hasMore = true
-    this.page = 1
+    this.page = 0
     this.loadMore()
-      .then(() => wx.stopPullDownRefresh())
   },
   onReachBottom () {
     this.loadMore()

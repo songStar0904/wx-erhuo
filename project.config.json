@@ -8,6 +8,7 @@
 		"newFeature": true
 	},
 	"miniprogramRoot": "dist/",
+	"cloudfunctionRoot": "functions/",
 	"compileType": "miniprogram",
 	"appid": "wx8dcca98a022387d8",
 	"projectname": "wx-erhuo",
