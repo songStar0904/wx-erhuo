@@ -43,9 +43,6 @@ export default {
   },
   methods: {
     init () {
-      wx.cloud.init({
-        traceUser: true
-      })
       this.loadMore()
     },
     loadMore () {
@@ -81,22 +78,6 @@ export default {
       })
       return data
     },
-    bindViewTap () {
-      const url = '../logs/main'
-      wx.navigateTo({ url })
-    },
-    getUserInfo () {
-      // 调用登录接口
-      wx.login({
-        success: () => {
-          wx.getUserInfo({
-            success: (res) => {
-              this.userInfo = res.userInfo
-            }
-          })
-        }
-      })
-    },
     clickHandle (msg, ev) {
       console.log('clickHandle:', msg, ev)
     }
@@ -121,9 +102,6 @@ export default {
 </script>
 
 <style scoped>
-.col-12 {
-  width: 50%;
-}
 .userinfo {
   display: flex;
   flex-direction: column;

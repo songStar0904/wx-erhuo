@@ -6,6 +6,9 @@ app.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '查看启动日志'
+    navigationBarTitleText: '我的',
+    usingComponents: {
+      'i-button': '/static/iview/button/index'
+    }
   }
 }
