@@ -58,7 +58,7 @@ Component({
             const { url } = this.data;
             const type = typeof this.data.isLink;
 
-            this.triggerEvent('click', {});
+            this.triggerEvent('iclick', {});
 
             if (!this.data.isLink || !url || url === 'true' || url === 'false') return;
 
