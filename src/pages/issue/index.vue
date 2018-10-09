@@ -31,7 +31,7 @@
 	    		<i-input  :value="goods.price" @change="changePrice" name="price" type="number"title="现价" maxlength="10"/>
 	    		<i-input :value="goods.oprice" @change="changeOprice" name="oprice" type="number"title="原价" maxlength="10"></i-input>
 	    	</div>
-	    	<textarea class="goods-detail" :value="goods.detail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
+	    	<textarea class="goods-detail" :value="goods.detail" @input="changeDetail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
 	    </div>
 	    <div class="space-h"></div>
 	    <i-cell-group>
@@ -47,13 +47,14 @@
 	</form>
 	<i-action-sheet :visible="isShowClassify" show-cancel @cancel="closeClassify" @iclick="changeClassify" :actions="classify"></i-action-sheet>
 	<i-toast id="toast" />
+	<i-message id="message" />
   </div>
 </template>
 
 <script>
 import {getCloudPath} from '@/utils/index.js'
 import WxValidate from '../../../static/utils/validate.js'
-import { $Toast } from '../../../static/iview/base/index'
+import { $Toast, $Message } from '../../../static/iview/base/index'
 export default {
   data () {
     return {
@@ -72,9 +73,6 @@ export default {
       isShowClassify: false,
       isShowPrice: false,
       rules: {
-        classify: {
-          required: true
-        },
         name: {
           required: true,
           maxlength: 20
@@ -88,6 +86,9 @@ export default {
           number: true
         },
         detail: {
+          required: true
+        },
+        classify: {
           required: true
         },
         icon: {
@@ -170,6 +171,9 @@ export default {
     changeName ({target: {detail: {value}}}) {
       this.goods.name = value
     },
+    changeDetail ({target: {value}}) {
+      this.goods.detail = value
+    },
     changePrice ({target: {detail: {value}}}) {
       console.log(value)
       this.goods.price = value
@@ -200,13 +204,31 @@ export default {
       this.closeClassify()
     },
     formSubmit (e) {
-      console.log(e, this.goods.classify)
+      console.log(e, this.goods.detail)
       let data = this.goods
       // 传入表单数据，调用验证方法
       if (!this.validate.checkForm(data)) {
         const error = this.validate.errorList[0]
         $Toast({
           content: error.msg
+        })
+      } else {
+        wx.cloud.callFunction({
+          name: 'setGoods',
+          data
+        }).then(res => {
+          console.log(res)
+          if (res.result.errMsg === 'collection.add:ok') {
+            $Message({
+              content: '发布成功！',
+              type: 'success'
+            })
+          } else {
+            $Message({
+              content: '发布失败，请重新发布！',
+              type: 'error'
+            })
+          }
         })
       }
     }
