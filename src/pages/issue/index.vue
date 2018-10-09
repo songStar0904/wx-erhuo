@@ -3,7 +3,7 @@
   	<i-notice-bar icon="systemprompt" closable>
 	    {{notice}}
 	</i-notice-bar>
-	<form bindsubmit="formSubmit">
+	<form @submit="formSubmit" report-submit>
 		<div class="upload" :class="goods.icon.length > 0 ? 'has-upload' : 'no-upload'">
 			<div class="add-icon" @click="chooseIcon">
 				<i-icon type="camera" size="30" color="#333" />
@@ -24,7 +24,7 @@
 	    <div class="space-h"></div>
 	    <div class="goods-info">
 	    	<div class="goods-name">
-	    	    <i-input  :value="goods.name" @change="changeName" name="name" placeholder="为二货取个有人的名字吧~" :maxlength="maxlength"/>
+	    	    <i-input  :value="goods.name" @change="changeName" name="name" placeholder="为二货取个诱人的名字吧~" :maxlength="maxlength"/>
 	    	    <span class="max-length">{{odd}}</span>
 	    	</div>
 	    	<div class="goods-price">
@@ -40,15 +40,20 @@
 		    <!-- <i-cell title="价格" is-link :value="goods.price ? goods.price : '开价'" only-tap-footer="true"></i-cell> -->
 		</i-cell-group>
 	    <div class="issue fixed-footer">
-	      <i-button long="true" type="success" formType="submit">发布</i-button>
+	      <i-button long="true" type="success" >发布</i-button>
+	      <!-- i-button 还未支持formType="submit" 用button做临时处理覆盖到i-button上-->
+	      <button formType="submit" style="height: 88rpx;position: absolute; top: 0;left: 0;right: 0;opacity: 0"></button>
 	    </div>
 	</form>
 	<i-action-sheet :visible="isShowClassify" show-cancel @cancel="closeClassify" @iclick="changeClassify" :actions="classify"></i-action-sheet>
+	<i-toast id="toast" />
   </div>
 </template>
 
 <script>
 import {getCloudPath} from '@/utils/index.js'
+import WxValidate from '../../../static/utils/validate.js'
+import { $Toast } from '../../../static/iview/base/index'
 export default {
   data () {
     return {
@@ -62,21 +67,66 @@ export default {
         detail: '',
         classify: null
       },
-      classify: [{
-        name: '书籍'
-      }, {
-        name: '电器'
-      }],
+      classify: [],
       maxlength: 20,
       isShowClassify: false,
-      isShowPrice: false
+      isShowPrice: false,
+      rules: {
+        classify: {
+          required: true
+        },
+        name: {
+          required: true,
+          maxlength: 20
+        },
+        price: {
+          required: true,
+          number: true
+        },
+        oprice: {
+          required: true,
+          number: true
+        },
+        detail: {
+          required: true
+        },
+        icon: {
+          required: true
+        }
+      },
+      msgs: {
+        name: {
+          required: '请输入二货名称',
+          maxlength: '二货名称不得超过20'
+        },
+        price: {
+          required: '请输入现价',
+          number: '请输入数字'
+        },
+        oprice: {
+          required: '请输入原价',
+          number: '请输入数字'
+        },
+        icon: {
+          required: '请上传二货图片'
+        },
+        classify: {
+          required: '请选择分类'
+        },
+        detail: {
+          required: '好的描述更容易卖出去哦~'
+        }
+      },
+      validate: null
     }
   },
-  watch: {},
   computed: {
     odd () {
       return this.maxlength - this.goods.name.length
     }
+  },
+  mounted () {
+    this.validate = new WxValidate(this.rules, this.msgs)
   },
   methods: {
     chooseIcon () {
@@ -128,7 +178,7 @@ export default {
       this.goods.oprice = value
     },
     showClassify () {
-      if (this.classify) {
+      if (this.classify.length > 0) {
         this.isShowClassify = true
       } else {
         wx.cloud.callFunction({
@@ -150,7 +200,15 @@ export default {
       this.closeClassify()
     },
     formSubmit (e) {
-      console.log(e)
+      console.log(e, this.goods.classify)
+      let data = this.goods
+      // 传入表单数据，调用验证方法
+      if (!this.validate.checkForm(data)) {
+        const error = this.validate.errorList[0]
+        $Toast({
+          content: error.msg
+        })
+      }
     }
   }
 }
