@@ -71,8 +71,16 @@ export function formatSchool (sid) {
   }
   return sid
 }
+export function getCloudPath (val) {
+  let date = new Date()
+  let year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let day = date.getDate()
+  return `${val}/${year}${month > 9 ? month : `0${month}`}${day > 9 ? day : `0${day}`}/${date.getTime()}.png`
+}
 export default {
   formatNumber,
   formatTime,
-  formatSchool
+  formatSchool,
+  getCloudPath
 }

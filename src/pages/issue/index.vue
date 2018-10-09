@@ -4,13 +4,23 @@
 	    {{notice}}
 	</i-notice-bar>
 	<form bindsubmit="formSubmit">
-		<div class="upload" name="icon">
-			<div class="has-upload" v-show="goods.icon"></div>
-			<div class="no-upload" v-show="!goods.icon">
+		<div class="upload" :class="goods.icon.length > 0 ? 'has-upload' : 'no-upload'">
+			<div class="add-icon" @click="chooseIcon">
 				<i-icon type="camera" size="30" color="#333" />
-				<div>点击上传图片</div>
+			    <div>上传图片</div>
 			</div>
-	    </div>
+			<scroll-view scroll-x class="icon-wrap" v-if="goods.icon.length > 0">
+			<block v-for="(item, index) in goods.icon" :key="index">
+				<div class="icon-box">
+					<div class="close" @click="delIcon(index)">
+						<i-icon type="close" size="12" color="#fff"/>
+					</div>
+					<div class="default" v-if="index === 0">封面</div>
+					<img :src="item" alt="" @click="selectDefault(index)">
+				</div>
+			</block>
+			</scroll-view>
+			</div>
 	    <div class="space-h"></div>
 	    <div class="goods-info">
 	    	<div class="goods-name">
@@ -30,7 +40,7 @@
 		    <!-- <i-cell title="价格" is-link :value="goods.price ? goods.price : '开价'" only-tap-footer="true"></i-cell> -->
 		</i-cell-group>
 	    <div class="issue fixed-footer">
-	      <i-button long="true" type="success">发布</i-button>
+	      <i-button long="true" type="success" formType="submit">发布</i-button>
 	    </div>
 	</form>
 	<i-action-sheet :visible="isShowClassify" show-cancel @cancel="closeClassify" @iclick="changeClassify" :actions="classify"></i-action-sheet>
@@ -38,6 +48,7 @@
 </template>
 
 <script>
+import {getCloudPath} from '@/utils/index.js'
 export default {
   data () {
     return {
@@ -47,7 +58,7 @@ export default {
         uid: '',
         price: null,
         oprice: null,
-        icon: '',
+        icon: [],
         detail: '',
         classify: null
       },
@@ -68,6 +79,44 @@ export default {
     }
   },
   methods: {
+    chooseIcon () {
+      let that = this
+      wx.chooseImage({
+        success (res) {
+          if (res.errMsg === 'chooseImage:ok') {
+            let cloudPath = getCloudPath('goods')
+            console.log(res.tempFilePaths, cloudPath)
+            wx.cloud.callFunction({
+              // 云函数名称
+              name: 'upload',
+              data: {
+                cloudPath,
+                fileContent: res.tempFilePaths
+              }
+            }).then(r => {
+              console.log(r)
+              that.goods.icon.push(...res.tempFilePaths)
+            }).catch(res => {
+              console.log(res)
+            })
+          }
+        },
+        error (err) {
+          console.log(err)
+        }
+      })
+    },
+    delIcon (index) {
+      let {icon} = this.goods
+      icon.splice(index, 1)
+      this.goods.icon = icon
+    },
+    selectDefault (index) {
+      let {icon} = this.goods
+      let flag = icon.splice(index, 1)
+      icon.unshift(flag)
+      this.goods.icon = icon
+    },
     changeName ({target: {detail: {value}}}) {
       this.goods.name = value
     },
@@ -111,15 +160,69 @@ export default {
 .issue-wrap{
 }
 .upload{
-	height: 200rpx;
+    height: 200rpx;
+	padding: 30rpx;
+	box-sizing: border-box;
+	display: flex;
+	font-size: 28rpx;
+	color: #333;
+}
+.upload.no-upload{
+	align-items: center;
+	justify-content: center;
+}
+.upload.has-upload{
+	overflow: hidden;
+}
+.upload.has-upload .icon-box, .upload .add-icon{
+	width: 120rpx;
+	height: 120rpx;
+}
+.upload.has-upload .icon-box{
+	position: relative;
+	margin-left: 20rpx;
+}
+.upload.has-upload .icon-box>img{
+	width: 100%;
+	height: 100%;
+}
+.upload.has-upload .icon-box>.close{
+	position: absolute;
+	right: 0;
+	top: 0;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	width: 26rpx;
+	height: 26rpx;
+	background: rgba(0, 0, 0, 0.6);
 }
-.upload>.no-upload{
-	text-align: center;
-	font-size: 28rpx;
-	color: #333;
+.upload.has-upload .icon-box>.default{
+	width: 100%;
+	height: 30rpx;
+	position: absolute;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+	background: #f76a24;
+	opacity: 0.6;
+	font-size: 26rpx;
+}
+.upload .add-icon{
+	width: 150rpx;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-sizing: border-box;
+	padding-top: 16rpx;
+}
+.upload>.icon-wrap{
+	flex-grow: 1;
+}
+.upload.has-upload .add-icon{
+	/*background: #eee;*/
 }
 .goods-name{
 	display: flex;

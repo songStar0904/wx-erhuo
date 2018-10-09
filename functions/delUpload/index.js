@@ -2,12 +2,12 @@
 const cloud = require('wx-server-sdk')
 
 cloud.init()
-const db = cloud.database()
+
 // 云函数入口函数
 exports.main = async (event, context) => {
-  try {
-    return await db.collection('classify').get()
-  } catch (e) {
-    return e
-  }
+  const fileIDs = {event}
+  const result = await cloud.deleteFile({
+    fileList: fileIDs,
+  })
+  return result.fileList
 }

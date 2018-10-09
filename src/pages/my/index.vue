@@ -38,6 +38,9 @@ export default {
       wx.cloud.callFunction({
         name: 'setUser',
         data: this.userInfo
+      }).then(res => {
+        console.log(res)
+        this.userInfo._id = res.result._id
       })
     },
     getUserInfo () {
