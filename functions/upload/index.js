@@ -10,13 +10,8 @@ exports.main = async(event, context) => {
     cloudPath,
     fileContent
   } = event
-  await cloud.uploadFile({
+  return await cloud.uploadFile({
     cloudPath,
-    fileContent: fileContent[0]
-  }).then(res => {
-    const result = await cloud.getTempFileURL({
-      fileList: res.requestID,
-    })
-    return result
+    fileContent: fileContent[0],
   })
 }

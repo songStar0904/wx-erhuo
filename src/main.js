@@ -28,6 +28,11 @@ export default {
         iconPath: 'static/images/home.png',
         selectedIconPath: 'static/images/home_s.png'
       }, {
+        pagePath: 'pages/issue/main',
+        text: '发布',
+        iconPath: 'static/images/add.png',
+        selectedIconPath: 'static/images/add_s.png'
+      }, {
         pagePath: 'pages/my/main',
         text: '我的',
         iconPath: 'static/images/my.png',

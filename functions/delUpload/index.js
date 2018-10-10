@@ -5,7 +5,7 @@ cloud.init()
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  const fileIDs = {event}
+  const {fileIDs} = event
   const result = await cloud.deleteFile({
     fileList: fileIDs,
   })

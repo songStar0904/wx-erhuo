@@ -129,6 +129,14 @@ export default {
   mounted () {
     this.validate = new WxValidate(this.rules, this.msgs)
   },
+  onShow () {
+    if (wx.getStorageSync('goods')) {
+      this.goods = wx.getStorageSync('goods')
+    }
+  },
+  onHide () {
+    wx.setStorageSync('goods', this.goods)
+  },
   methods: {
     chooseIcon () {
       let that = this
@@ -137,19 +145,27 @@ export default {
           if (res.errMsg === 'chooseImage:ok') {
             let cloudPath = getCloudPath('goods')
             console.log(res.tempFilePaths, cloudPath)
-            wx.cloud.callFunction({
-              // 云函数名称
-              name: 'upload',
-              data: {
-                cloudPath,
-                fileContent: res.tempFilePaths
-              }
+            wx.cloud.uploadFile({
+              cloudPath,
+              filePath: res.tempFilePaths[0]
             }).then(r => {
-              console.log(r)
-              that.goods.icon.push(...res.tempFilePaths)
-            }).catch(res => {
-              console.log(res)
+              that.goods.icon.push(r.fileID)
+            }).catch(e => {
+              console.log(e)
             })
+            // wx.cloud.callFunction({
+            //   // 云函数名称
+            //   name: 'upload',
+            //   data: {
+            //     cloudPath,
+            //     fileContent: res.tempFilePaths
+            //   }
+            // }).then(r => {
+            //   console.log(r)
+            //   that.goods.icon.push(r.result.fileID)
+            // }).catch(res => {
+            //   console.log(res)
+            // })
           }
         },
         error (err) {
@@ -158,9 +174,17 @@ export default {
       })
     },
     delIcon (index) {
-      let {icon} = this.goods
-      icon.splice(index, 1)
-      this.goods.icon = icon
+      let {icon} = JSON.parse(JSON.stringify(this.goods))
+      let fileIDs = icon.splice(index, 1)
+      wx.cloud.callFunction({
+        name: 'delUpload',
+        data: {
+          fileIDs
+        }
+      }).then(res => {
+        console.log(res)
+        this.goods.icon = icon
+      })
     },
     selectDefault (index) {
       let {icon} = this.goods
