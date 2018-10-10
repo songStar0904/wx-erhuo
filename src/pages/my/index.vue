@@ -1,13 +1,42 @@
 <template>
   <div>
-    <button class="user-base-info" open-type="getUserInfo" @getuserinfo="onGetUserInfo" type="ghost" :long="true" v-if="!userInfo._id">
-      <image class="avatar" :src="userInfo.avatarUrl" mode="aspectFill"></image>
-      <view class="username">{{userInfo.nickName}}</view>
-    </button>
-    <div class="user-base-info" v-else>
-      <image class="avatar" :src="userInfo.avatarUrl" mode="aspectFill"></image>
-      <view class="username">{{userInfo.nickName}}</view>
+    <div class="user-box">
+      <button class="user-base-info" open-type="getUserInfo" @getuserinfo="onGetUserInfo" type="ghost" :long="true" v-if="!userInfo._id">
+        <image class="avatar" :src="userInfo.avatarUrl" mode="aspectFill"></image>
+        <view class="username">{{userInfo.nickName}}</view>
+      </button>
+      <div class="user-base-info" v-else>
+        <image class="avatar" :src="userInfo.avatarUrl" mode="aspectFill"></image>
+        <view class="username">{{userInfo.nickName}}</view>
+      </div>
     </div>
+    <div class="main">
+      <div class="main-item issue">
+        <i-icon type="document_fill" size="32" color="#19be6b" />
+        <span>我发布的</span>
+      </div>
+      <div class="main-item said">
+        <i-icon type="task_fill" size="32" color="#19be6b" />
+        <span>我卖出的</span>
+      </div>
+      <div class="main-item buy">
+        <i-icon type="service_fill" size="32" color="#19be6b" />
+        <span>我买到的</span>
+      </div>
+      <div class="main-item want">
+        <i-icon type="tasklist_fill" size="32" color="#19be6b" />
+        <span>我想要的</span>
+      </div>
+    </div>
+    <i-cell-group>
+        <i-cell title="关于我们" url="">
+          <i-icon type="setup" slot="icon" size="20"/>
+        </i-cell>
+        <i-cell title="客服热线" url="">
+          <i-icon type="translation" slot="icon" size="20"/>
+          <span slot="footer">0731-5558888</span>
+        </i-cell>
+    </i-cell-group>
   </div>
 </template>
 
@@ -26,6 +55,11 @@ export default {
   },
 
   created () {
+    wx.chooseInvoice({
+      success (res) {
+        console.log(res)
+      }
+    })
     this.getUserInfo()
   },
   methods: {
@@ -74,11 +108,27 @@ export default {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
-  border: 1rpx solid #e0e0e0;
 }
 .user-base-info>.username{
   font-size: 30rpx;
   font-weight: 500;
   margin-top: 20rpx;
+}
+
+.main{
+  display: flex;
+  padding: 50rpx 0;
+}
+.main>.main-item{
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-size: 20rpx;
+  color: #666;
+}
+.main>.main-item>span{
+  margin-top: 10rpx;
 }
 </style>

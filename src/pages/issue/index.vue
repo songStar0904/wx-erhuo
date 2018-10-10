@@ -24,7 +24,7 @@
 	    <div class="space-h"></div>
 	    <div class="goods-info">
 	    	<div class="goods-name">
-	    	    <i-input  :value="goods.name" @change="changeName" name="name" placeholder="为二货取个诱人的名字吧~" :maxlength="maxlength"/>
+	    	    <i-input style="width: 80%" :value="goods.name" @change="changeName" name="name" placeholder="为二货取个诱人的名字吧~" :maxlength="maxlength"/>
 	    	    <span class="max-length">{{odd}}</span>
 	    	</div>
 	    	<div class="goods-price">
@@ -246,6 +246,14 @@ export default {
             $Message({
               content: '发布成功！',
               type: 'success'
+            })
+            wx.removeStorage({
+              key: 'goods',
+              success () {
+                wx.switchTab({
+                  url: '/pages/index/main'
+                })
+              }
             })
           } else {
             $Message({

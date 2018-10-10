@@ -20,7 +20,7 @@ export default {
     },
     tabBar: {
       selectedColor: '#19be6b',
-      borderStyle: 'white',
+      borderStyle: 'black',
       backgroundColor: '#fff',
       list: [{
         pagePath: 'pages/index/main',
