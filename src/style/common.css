@@ -25,6 +25,9 @@
 .bg-gray {
 	background: rgb(245,245,245);
 }
+.border-b{
+	border-bottom:1rpx solid #eee;
+}
 .card{
 	border: 1px solid #dddee1;
     border-color: #e9eaec;

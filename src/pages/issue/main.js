@@ -17,7 +17,9 @@ export default {
       'i-cell': '/static/iview/cell/index',
       'i-action-sheet': '/static/iview/action-sheet/index',
       'i-toast': '/static/iview/toast/index',
-      'i-message': '/static/iview/message/index'
+      'i-message': '/static/iview/message/index',
+      'i-index': '/static/iview/index/index',
+      'i-index-item': '/static/iview/index-item/index'
     }
   }
 }

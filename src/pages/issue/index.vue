@@ -16,7 +16,7 @@
 						<i-icon type="close" size="12" color="#fff"/>
 					</div>
 					<div class="default" v-if="index === 0">封面</div>
-					<img :src="item" alt="" @click="selectDefault(index)">
+					<image :src="item" alt="" @click="selectDefault(index)"></image>
 				</div>
 			</block>
 			</scroll-view>
@@ -34,11 +34,12 @@
 	    	<textarea class="goods-detail" :value="goods.detail" @input="changeDetail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
 	    </div>
 	    <div class="space-h"></div>
-	    <i-cell-group>
+	    <i-cell-group i-class="border-b">
 		    <i-cell title="分类" is-link :value="goods.classify ? goods.classify.name : '选择分类'" @iclick="showClassify"></i-cell>
-		    <i-cell title="地址" is-link :value="goods.address ? goods.address.name : '选择地址'" @iclick="showClassify"></i-cell>
+		    <i-cell title="学校" is-link :value="goods.school ? goods.school.name : '选择地址'" @iclick="showSchool"></i-cell>
 		    <!-- <i-cell title="价格" is-link :value="goods.price ? goods.price : '开价'" only-tap-footer="true"></i-cell> -->
 		</i-cell-group>
+		<i-input v-if="goods.school" :value="goods.address" @change="changeAddress" name="address" placeholder="详细地址，如：北校区X区X栋101" maxlength="50"></i-input>
 	    <div class="issue fixed-footer">
 	      <i-button long="true" type="success" >发布</i-button>
 	      <!-- i-button 还未支持formType="submit" 用button做临时处理覆盖到i-button上-->
@@ -46,6 +47,16 @@
 	    </div>
 	</form>
 	<i-action-sheet :visible="isShowClassify" show-cancel @cancel="closeClassify" @iclick="changeClassify" :actions="classify"></i-action-sheet>
+	<i-action-sheet :visible="isShowSchool" show-cancel @cancel="closeSchool" @iclick="changeSchool">
+		<!-- 数据多后使用 -->
+		<i-index slot="content" >
+			<i-index-item v-for="(item, index) in school" :key="index" :name="item.key">
+				<div v-for="(s, i) in item.list" :key="i" @click="changeSchool(s)">
+					{{s.name}}
+				</div>
+			</i-index-item>
+		</i-index>
+	</i-action-sheet>
 	<i-toast id="toast" />
 	<i-message id="message" />
   </div>
@@ -66,11 +77,15 @@ export default {
         oprice: null,
         icon: [],
         detail: '',
-        classify: null
+        classify: null,
+        school: null,
+        address: ''
       },
       classify: [],
+      school: [],
       maxlength: 20,
       isShowClassify: false,
+      isShowSchool: false,
       isShowPrice: false,
       rules: {
         name: {
@@ -89,6 +104,12 @@ export default {
           required: true
         },
         classify: {
+          required: true
+        },
+        school: {
+          required: true
+        },
+        address: {
           required: true
         },
         icon: {
@@ -116,6 +137,12 @@ export default {
         },
         detail: {
           required: '好的描述更容易卖出去哦~'
+        },
+        school: {
+          required: '请选择学校'
+        },
+        address: {
+          required: '请输入详细地址'
         }
       },
       validate: null
@@ -187,10 +214,8 @@ export default {
       })
     },
     selectDefault (index) {
-      let {icon} = this.goods
-      let flag = icon.splice(index, 1)
-      icon.unshift(flag)
-      this.goods.icon = icon
+      let {icon} = JSON.parse(JSON.stringify(this.goods))
+      this.goods.icon = [...icon.splice(index, 1), ...icon]
     },
     changeName ({target: {detail: {value}}}) {
       this.goods.name = value
@@ -199,7 +224,6 @@ export default {
       this.goods.detail = value
     },
     changePrice ({target: {detail: {value}}}) {
-      console.log(value)
       this.goods.price = value
     },
     changeOprice ({target: {detail: {value}}}) {
@@ -227,9 +251,37 @@ export default {
       this.goods.classify = this.classify[index]
       this.closeClassify()
     },
+    showSchool () {
+      console.log(this.school)
+      if (this.school.length > 0) {
+        this.isShowSchool = true
+      } else {
+        wx.cloud.callFunction({
+          // 云函数名称
+          name: 'getSchool'
+        }).then(res => {
+          console.log(res)
+          this.isShowSchool = true
+          this.school = res.result.data
+          console.log(this.school)
+        }).catch(res => {
+          console.log('error' + res)
+        })
+      }
+    },
+    closeSchool () {
+      this.isShowSchool = false
+    },
+    changeSchool (school) {
+      this.goods.school = school
+      this.closeSchool()
+    },
+    changeAddress ({target: {detail: {value}}}) {
+      this.goods.address = value
+    },
     formSubmit (e) {
-      console.log(e, this.goods.detail)
       let data = this.goods
+      console.log(e, data)
       // 传入表单数据，调用验证方法
       if (!this.validate.checkForm(data)) {
         const error = this.validate.errorList[0]
@@ -247,13 +299,19 @@ export default {
               content: '发布成功！',
               type: 'success'
             })
-            wx.removeStorage({
-              key: 'goods',
-              success () {
-                wx.switchTab({
-                  url: '/pages/index/main'
-                })
-              }
+            this.goods = {
+              name: '',
+              uid: '',
+              price: null,
+              oprice: null,
+              icon: [],
+              detail: '',
+              classify: null,
+              school: null,
+              address: ''
+            }
+            wx.switchTab({
+              url: '/pages/index/main'
             })
           } else {
             $Message({
@@ -291,10 +349,11 @@ export default {
 	height: 120rpx;
 }
 .upload.has-upload .icon-box{
+	display: inline-block;
 	position: relative;
 	margin-left: 20rpx;
 }
-.upload.has-upload .icon-box>img{
+.upload.has-upload .icon-box>image{
 	width: 100%;
 	height: 100%;
 }

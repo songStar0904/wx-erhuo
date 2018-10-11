@@ -15,7 +15,9 @@ exports.main = async(event, context) => {
       icon,
       userInfo: {
         openId
-      }
+      },
+      school,
+      address
     } = event
     
     let uid = await db.collection('user').where({
@@ -23,8 +25,6 @@ exports.main = async(event, context) => {
     }).field({
       _id: true
     }).get()
-    let icons = icon
-    icon = icon[0]
 
     let cid = classify._id
     let date = new Date().getTime()
@@ -38,7 +38,9 @@ exports.main = async(event, context) => {
           detail,
           cid,
           icon,
-          date
+          date,
+          school,
+          address
         }
       })
     } else {
@@ -51,7 +53,9 @@ exports.main = async(event, context) => {
           cid,
           uid: uid.data[0]._id,
           icon,
-          date
+          date,
+          school,
+          address
         }
       })
     }

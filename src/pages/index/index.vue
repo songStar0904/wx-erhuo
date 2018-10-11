@@ -21,10 +21,6 @@ export default {
     return {
       swipers: [{
         url: '/static/images/swiper_1.png'
-      }, {
-        url: '/static/images/swiper_2.png'
-      }, {
-        url: '/static/images/swiper_3.png'
       }],
       indicatorDots: true,
       autoplay: true,

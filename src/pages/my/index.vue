@@ -29,17 +29,16 @@
       </div>
     </div>
     <i-cell-group>
-        <i-cell title="关于我们" url="">
-          <i-icon type="setup" slot="icon" size="20"/>
-        </i-cell>
-        <i-cell title="客服热线" url="">
-          <i-icon type="translation" slot="icon" size="20"/>
-          <span slot="footer">0731-5558888</span>
-        </i-cell>
+      <i-cell title="关于我们" url="">
+        <i-icon type="setup" slot="icon" size="20" />
+      </i-cell>
+      <i-cell title="客服热线" url="">
+        <i-icon type="translation" slot="icon" size="20" />
+        <span slot="footer">0731-5558888</span>
+      </i-cell>
     </i-cell-group>
   </div>
 </template>
-
 <script>
 export default {
   data () {
@@ -53,7 +52,6 @@ export default {
       }
     }
   },
-
   created () {
     wx.chooseInvoice({
       success (res) {
@@ -63,7 +61,7 @@ export default {
     this.getUserInfo()
   },
   methods: {
-    onGetUserInfo ({target: {userInfo}}) {
+    onGetUserInfo ({ target: { userInfo } }) {
       this.userInfo.avatarUrl = userInfo.avatarUrl
       this.userInfo.nickName = userInfo.nickName
       this.saveUserInfo()
@@ -90,9 +88,8 @@ export default {
   }
 }
 </script>
-
 <style>
-.user-base-info{
+.user-base-info {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -100,26 +97,30 @@ export default {
   background: #fff;
   height: 300rpx;
 }
-.user-base-info:after{
+
+.user-base-info:after {
   border-radius: 0;
   border: none;
 }
-.user-base-info>.avatar{
+
+.user-base-info>.avatar {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
 }
-.user-base-info>.username{
+
+.user-base-info>.username {
   font-size: 30rpx;
   font-weight: 500;
   margin-top: 20rpx;
 }
 
-.main{
+.main {
   display: flex;
   padding: 50rpx 0;
 }
-.main>.main-item{
+
+.main>.main-item {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -128,7 +129,9 @@ export default {
   font-size: 20rpx;
   color: #666;
 }
-.main>.main-item>span{
+
+.main>.main-item>span {
   margin-top: 10rpx;
 }
+
 </style>

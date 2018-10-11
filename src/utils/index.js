@@ -78,9 +78,12 @@ export function getCloudPath (val) {
   let day = date.getDate()
   return `${val}/${year}${month > 9 ? month : `0${month}`}${day > 9 ? day : `0${day}`}/${date.getTime()}.png`
 }
+export function getSchool (val) {
+}
 export default {
   formatNumber,
   formatTime,
   formatSchool,
-  getCloudPath
+  getCloudPath,
+  getSchool
 }

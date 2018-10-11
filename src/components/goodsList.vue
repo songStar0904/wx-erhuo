@@ -4,7 +4,7 @@
   	  <i-col span="12"  i-class="col-class" v-for="(goods, index) in goodsData" :key="index">
 	  	<navigator class="card"  :url="'/pages/goodsItem/main?id=' + goods._id">
 	  	  <div class="img">
-	        <img :src="goods.icon" alt="">
+	        <img :src="goods.icon[0]" alt="">
 	        <p></p>
 	      </div>
 	      <div class="title">
