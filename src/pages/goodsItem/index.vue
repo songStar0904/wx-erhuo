@@ -2,53 +2,30 @@
   <div class="bg-gray">
     <swiper :indicator-dots="indicatorDots"
       :interval="interval" indicator-color="rgba(255, 255, 255, .3)" indicator-active-color="#fff" style="height: 500rpx;">
-      <block v-for="(item, index) in goods.goods_icon" :key="index">
+      <block v-for="(item, index) in goods.icon" :key="index">
         <swiper-item>
-          <image :src="'http://api.songstar.cn' + item.url" class="slide-image"/>
+          <image :src="item" class="slide-image"/>
         </swiper-item>
       </block>
     </swiper>
     <div class="goods-info">
     	<div class="goods-heard clearfix">
-    		<div class="fl goods-name">{{goods.goods_name}}</div>
-        <Tag color="#f40">aasd</Tag>
+    		<div class="fl goods-name">{{goods.name}}</div>
     		<div class="fr">
-    			<span class="oprice">￥{{goods.goods_oprice}}</span>
-    			<span class="nprice">￥{{goods.goods_nprice}}</span>
+    			<span class="oprice">￥{{goods.oprice}}</span>
+    			<span class="nprice">￥{{goods.price}}</span>
     		</div>
     	</div>
-    	<div class="goods-classify info-item"><span class="label">分类：</span>{{goods.gclassify.name}}</div>
-    	<div class="goods-address info-item"><span class="label">地址：</span>{{goods.goods_address}}</div>
-    	<div class="goods-summary">{{goods.goods_summary}}</div>
+    	<div class="goods-classify info-item"><span class="label">分类：</span>{{goods.classify.name}}</div>
+    	<div class="goods-address info-item"><span class="label">地址：</span>{{goods.address}}</div>
+    	<div class="goods-detail">{{goods.detail}}</div>
     </div>
-    <div class="card user-card">
-    	<div class="user clearfix">
-    		<div class="fl">
-    			<image :src="'http://api.songstar.cn' + guser.icon" class="fl"/>
-    	        <span class="fl">
-               <p class="user-name">{{guser.name}}</p>
-               <p class="user-school">{{guser.sid}}</p>
-              </span>
-    		</div>
-    		<div class="fr">></div>
-    	</div>
-    	<div class="user-info">
-    		<span class="flex-8">
-    			<p>在售</p>
-    			<p>23</p>
-    		</span>
-    		<span class="flex-8">
-    			<p>在售</p>
-    			<p>23</p>
-    		</span>
-    		<span class="flex-8">
-    			<p>在售</p>
-    			<p>23</p>
-    		</span>
-    	</div>
-    </div>
+    <i-card :title="goods.user.nickName" extra="查看更多" :thumb="goods.user.avatarUrl" i-class="card-user">
+      <view slot="content">联系方式： {{goods.user.number}}</view>
+      <view slot="footer">发布学校： {{goods.school.name}}</view>
+  </i-card>
     <div class="lmsg">
-    	<div class="lmsg-heard clearfix">
+    	<!-- <div class="lmsg-heard clearfix">
     		<div class="fl">留言（{{lmsg.length}}）</div>
     		<div class="fr">{{goods.fans_num}}人想要</div>
     	</div>
@@ -57,18 +34,18 @@
         <input v-model="inputValue" maxlength="255" placeholder="您有什么想说的..." class="input"/>
         <button type="primary" size="mini" class="btn" @click="send_msg" > 发送 </button>
       </div>
-      <comment-box :lmsg="lmsg"></comment-box>
+      <comment-box :lmsg="lmsg"></comment-box> -->
+    </div>
+    <div class="footer">
+      <i-button type="success" shape="circle" i-class="btn">联系卖家</i-button>
     </div>
   </div>
 </template>
 <script>
-  import {Tag} from '@/components'
   import commentBox from '@/components/commentBox'
   import {formatSchool} from '@/utils'
-  import fetch from '@/utils/fetch'
   export default{
     components: {
-      Tag,
       commentBox
     },
     data () {
@@ -77,10 +54,11 @@
           user: {
             sid: 448
           },
-          gclassify: {
+          classify: {
             name: 'x'
           },
-          goods_lmsg: []
+          school: {},
+          lmsg: []
         },
         inputValue: '',
         indicatorDots: true,
@@ -94,7 +72,7 @@
         return this.goods.user
       },
       lmsg () {
-        return this.goods.goods_lmsg
+        return this.goods.lmsg
       }
     },
     methods: {
@@ -107,16 +85,19 @@
      */
     onLoad (params) {
       wx.showLoading({ title: '拼命加载中...' })
-  
-      fetch('goods/get_one', {
-        goods_id: params.id
-      }).then(d => {
-        let goods = d.data.data
-        this.goods = goods
-        wx.setNavigationBarTitle({ title: `二货 - ${goods.goods_name}` })
+      wx.cloud.callFunction({
+        // 云函数名称
+        name: 'getOneGood',
+        // 传给云函数的参数
+        data: {
+          _id: params.id
+        }
+      }).then(res => {
+        this.goods = res.result
+        console.log(this.goods)
+        wx.setNavigationBarTitle({ title: `二货 - ${this.goods.name}` })
         wx.hideLoading()
       }).catch(e => {
-        this.setData({ title: '获取数据异常', movie: {} })
         console.error(e)
         wx.hideLoading()
       })
@@ -130,10 +111,12 @@
     }
   }
 </script>
-<style scoped>
+<style>
 .goods-info {
 	padding: 20rpx;
-	background: #fff;/*
+	background: #fff;
+  margin-bottom: 40rpx;
+  /*
 	//font-size: 27rpx;*/
 }
 .goods-info .goods-heard {
@@ -162,39 +145,22 @@
   border-radius: 30rpx;
   margin: 8rpx 20rpx;
 }
-.goods-info .goods-summary {
+.goods-info .goods-detail {
 	margin: 20rpx 0;
 	font-size: 27rpx;
 }
-.user image{
-	width: 70rpx;
-	height: 70rpx;
+.card-user{
+}
+.card-user image{
+	width: 80rpx;
+	height: 80rpx;
 	border-radius: 50%;
   margin-right: 20rpx;
 }
-.user-card {
-	margin: 20rpx;
-	padding: 20rpx;
-}
-.user-card .user{
-	margin-bottom: 20rpx;
-	padding-bottom: 20rpx;
-	border-bottom: 1px solid #dddee1;
-}
-.user-card .user .user-name{
-	font-weight: 600;
-	font-size: 30rpx;
-}
-.user-card .user-info{
-	display: -webkit-flex; /* Safari */
-    display: flex;
-    justify-content:space-around;
-}
-.user-card .user-info{
-	text-align: center;
-}
 .lmsg {
 	background: #fff;
+  margin-top: 40rpx;
+  margin-bottom: 110rpx;
 	padding: 20rpx;
 	font-size: 28rpx;
 }
@@ -229,5 +195,16 @@
 .lmsg .lmsg-input .btn {
   border-radius: 0;
   margin: 0;
+}
+.footer{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+  border-top: 1rpx solid #eee;
+}
+.footer .btn{
+  height: 70rpx;
+  line-height: 70rpx;
 }
 </style>

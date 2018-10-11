@@ -30,13 +30,13 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 2,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
 					"name": "商品单页",
 					"pathName": "pages/goodsItem/main",
-					"query": "id=3"
+					"query": "id=W77oON2AWotkb34N"
 				},
 				{
 					"id": -1,
@@ -47,7 +47,8 @@
 				{
 					"id": -1,
 					"name": "发布",
-					"pathName": "pages/issue/main"
+					"pathName": "pages/issue/main",
+					"query": ""
 				}
 			]
 		}
