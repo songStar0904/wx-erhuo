@@ -52,7 +52,7 @@
       return {
         goods: {
           user: {
-            sid: 448
+            avatarUrl: '/static/images/user-unlogin.png'
           },
           classify: {
             name: 'x'
@@ -63,7 +63,7 @@
         inputValue: '',
         indicatorDots: true,
         interval: 5000,
-        hasMore: true
+        hasData: false
       }
     },
     computed: {
@@ -94,6 +94,7 @@
         }
       }).then(res => {
         this.goods = res.result
+        this.hasData = true
         console.log(this.goods)
         wx.setNavigationBarTitle({ title: `二货 - ${this.goods.name}` })
         wx.hideLoading()

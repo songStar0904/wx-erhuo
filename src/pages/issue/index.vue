@@ -31,12 +31,16 @@
 	    		<i-input  :value="goods.price" @change="changePrice" name="price" type="number"title="现价" maxlength="10"/>
 	    		<i-input :value="goods.oprice" @change="changeOprice" name="oprice" type="number"title="原价" maxlength="10"></i-input>
 	    	</div>
-	    	<textarea class="goods-detail" :value="goods.detail" @input="changeDetail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
-	    </div>
+	    	<textarea class="goods-detail " :class="{hide:(isShowClassify || isShowSchool)}" :value="goods.detail" @input="changeDetail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
+	    	<div class="goods-detail"  :class="{hide:(!isShowClassify && !isShowSchool)}" >
+            <span v-if="goods.detail">{{goods.detail}}</span>
+            <span v-else class="textarea-placeholder">在此描述你的二货。如：品牌，规格，成色等信息。</span>
+  	    </div>
+      </div>
 	    <div class="space-h"></div>
 	    <i-cell-group i-class="border-b">
 		    <i-cell title="分类" is-link :value="goods.classify ? goods.classify.name : '选择分类'" @iclick="showClassify"></i-cell>
-		    <i-cell title="学校" is-link :value="goods.school ? goods.school.name : '选择地址'" @iclick="showSchool"></i-cell>
+		    <i-cell title="学校" is-link :value="goods.school ? goods.school.name : '选择学校'" @iclick="showSchool"></i-cell>
 		    <!-- <i-cell title="价格" is-link :value="goods.price ? goods.price : '开价'" only-tap-footer="true"></i-cell> -->
 		</i-cell-group>
 		<i-input v-if="goods.school" :value="goods.address" @change="changeAddress" name="address" placeholder="详细地址，如：北校区X区X栋101" maxlength="50"></i-input>
@@ -48,10 +52,13 @@
 	</form>
 	<i-action-sheet :visible="isShowClassify" show-cancel @cancel="closeClassify" @iclick="changeClassify" :actions="classify"></i-action-sheet>
 	<i-action-sheet :visible="isShowSchool" show-cancel @cancel="closeSchool" @iclick="changeSchool">
+    <view slot="header" style="color: #333;padding: 32rpx;">
+        选择学校
+    </view>
 		<!-- 数据多后使用 -->
 		<i-index slot="content" >
 			<i-index-item v-for="(item, index) in school" :key="index" :name="item.key">
-				<div v-for="(s, i) in item.list" :key="i" @click="changeSchool(s)">
+				<div v-for="(s, i) in item.list" :key="i" @click="changeSchool(s)" class="school-item">
 					{{s.name}}
 				</div>
 			</i-index-item>
@@ -417,8 +424,14 @@ export default {
 	box-sizing: border-box;
 	padding: 30rpx;
 	font-size: 28rpx;
+	line-height:30rpx;
 }
 .textarea-placeholder{
 	font-size: 28rpx;
+  color: grey;
+  line-height: 28rpx;
+}
+.school-item{
+	padding: 20rpx 40rpx;
 }
 </style>

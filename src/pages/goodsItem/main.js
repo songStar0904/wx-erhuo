@@ -9,7 +9,7 @@ export default {
     usingComponents: {
       'i-card': '/static/iview/card/index',
       'i-button': '/static/iview/button/index',
-      'i-col': '/static/iview/col/index'
+      'skeleton': '/static/skeleton/skeleton'
     }
   }
 }

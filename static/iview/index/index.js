@@ -101,6 +101,7 @@ Component({
         },
         handlerFixedTap(event){
             const eindex = event.currentTarget.dataset.index;
+            console.log(event, index)
             const item = this.getCurrentItem(eindex);
             this.setData({
                 scrollTop : item.top,
@@ -117,7 +118,7 @@ Component({
             const touches = event.touches[0] || {};
             const pageY = touches.pageY;
             const rest = pageY - data.startTop;
-            let index = Math.ceil( rest/data.itemHeight );
+            let index = event.target.dataset.index + 1// Math.ceil( rest/data.itemHeight );
             index = index >= data.itemLength ? data.itemLength -1 : index;
             const movePosition = this.getCurrentItem(index);
 

@@ -53,11 +53,6 @@ export default {
     }
   },
   created () {
-    wx.chooseInvoice({
-      success (res) {
-        console.log(res)
-      }
-    })
     this.getUserInfo()
   },
   methods: {
