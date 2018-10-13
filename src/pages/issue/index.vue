@@ -418,6 +418,7 @@ export default {
 	display: flex;
 }
 .goods-detail{
+  z-index: -1;
 	width: 100%;
 	height: 200rpx;
 	border: none;

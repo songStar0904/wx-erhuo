@@ -1,6 +1,11 @@
 <template>
-  <div class="bg-gray">
-    <swiper :indicator-dots="indicatorDots"
+  
+  <div class="bg-gray skeleton">
+    <skeleton selector="skeleton"
+          loading="chiaroscuro"
+          bgcolor="#FFF"
+          v-if="!hasData"></skeleton>
+    <swiper :indicator-dots="indicatorDots" class="skeleton-rect"
       :interval="interval" indicator-color="rgba(255, 255, 255, .3)" indicator-active-color="#fff" style="height: 500rpx;">
       <block v-for="(item, index) in goods.icon" :key="index">
         <swiper-item>
@@ -10,19 +15,19 @@
     </swiper>
     <div class="goods-info">
     	<div class="goods-heard clearfix">
-    		<div class="fl goods-name">{{goods.name}}</div>
-    		<div class="fr">
+    		<div class="fl goods-name skeleton-rect">{{goods.name}}</div>
+    		<div class="fr price-item skeleton-rect">
     			<span class="oprice">￥{{goods.oprice}}</span>
     			<span class="nprice">￥{{goods.price}}</span>
     		</div>
     	</div>
-    	<div class="goods-classify info-item"><span class="label">分类：</span>{{goods.classify.name}}</div>
-    	<div class="goods-address info-item"><span class="label">地址：</span>{{goods.address}}</div>
-    	<div class="goods-detail">{{goods.detail}}</div>
+    	<div class="goods-classify info-item skeleton-rect"><span class="label">分类：</span>{{goods.classify.name}}</div>
+    	<div class="goods-address info-item skeleton-rect"><span class="label">地址：</span>{{goods.address}}</div>
+    	<div class="goods-detail skeleton-rect">{{goods.detail}}</div>
     </div>
-    <i-card :title="goods.user.nickName" extra="查看更多" :thumb="goods.user.avatarUrl" i-class="card-user">
-      <view slot="content">联系方式： {{goods.user.number}}</view>
-      <view slot="footer">发布学校： {{goods.school.name}}</view>
+    <i-card :title="goods.user.nickName" extra="查看更多" :thumb="goods.user.avatarUrl" i-class="skeleton-rect card-user">
+      <view slot="content" class="skeleton-rect">联系方式： {{goods.user.number}}</view>
+      <view slot="footer" class="skeleton-rect">发布学校： {{goods.school.name}}</view>
   </i-card>
     <div class="lmsg">
     	<!-- <div class="lmsg-heard clearfix">
@@ -51,8 +56,14 @@
     data () {
       return {
         goods: {
+          name: '可口可乐',
+          price: 100,
+          oprice: 100,
+          icon: [],
+          detail: '详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情',
           user: {
-            avatarUrl: '/static/images/user-unlogin.png'
+            avatarUrl: '/static/images/user-unlogin.png',
+            number: 123456789
           },
           classify: {
             name: 'x'
@@ -84,24 +95,28 @@
      * 生命周期函数--监听页面加载
      */
     onLoad (params) {
-      wx.showLoading({ title: '拼命加载中...' })
-      wx.cloud.callFunction({
-        // 云函数名称
-        name: 'getOneGood',
-        // 传给云函数的参数
-        data: {
-          _id: params.id
-        }
-      }).then(res => {
-        this.goods = res.result
-        this.hasData = true
-        console.log(this.goods)
-        wx.setNavigationBarTitle({ title: `二货 - ${this.goods.name}` })
-        wx.hideLoading()
-      }).catch(e => {
-        console.error(e)
-        wx.hideLoading()
-      })
+      if (params.id !== this.goods._id) {
+        this.goods.icon = []
+        this.hasData = false
+        wx.showLoading({ title: '拼命加载中...' })
+        wx.cloud.callFunction({
+          // 云函数名称
+          name: 'getOneGood',
+          // 传给云函数的参数
+          data: {
+            _id: params.id
+          }
+        }).then(res => {
+          this.goods = res.result
+          console.log(this.goods)
+          wx.setNavigationBarTitle({ title: `二货 - ${this.goods.name}` })
+          wx.hideLoading()
+          this.hasData = true
+        }).catch(e => {
+          console.error(e)
+          wx.hideLoading()
+        })
+      }
     },
 
     /**
@@ -123,6 +138,9 @@
 .goods-info .goods-heard {
   margin-bottom: 20rpx;
 }
+.goods-info .goods-heard .goods-name{
+  margin-bottom: 20rpx;
+}
 .goods-info .oprice{
 	font-size: 30rpx;
 	margin-right: 20rpx;
@@ -132,7 +150,11 @@
 .goods-info .nprice {
 	color: #f40;
 }
+.goods-info .goods-address{
+  margin-left: 40rpx;
+}
 .goods-info .info-item {
+  display: inline-block;
   font-size: 27rpx;
 }
 .goods-info .info-item .label {
@@ -145,6 +167,7 @@
   color: #80848f;
   border-radius: 30rpx;
   margin: 8rpx 20rpx;
+  margin-left: 0;
 }
 .goods-info .goods-detail {
 	margin: 20rpx 0;
