@@ -82,6 +82,9 @@ export function getCloudPath (val, id) {
     return `${val}/${id}.png`
   }
 }
+export function formatPrice (value) {
+  return parseFloat(isNaN(value) ? 0 : value).toFixed(2)
+}
 export function getSchool (val) {
 }
 export default {
@@ -89,5 +92,6 @@ export default {
   formatTime,
   formatSchool,
   getCloudPath,
-  getSchool
+  getSchool,
+  formatPrice
 }

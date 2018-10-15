@@ -10,7 +10,10 @@ export default {
       'i-card': '/static/iview/card/index',
       'i-button': '/static/iview/button/index',
       'i-icon': '/static/iview/icon/index',
-      'skeleton': '/static/skeleton/skeleton'
+      'i-toast': '/static/iview/toast/index',
+      'skeleton': '/static/skeleton/skeleton',
+      'i-action-sheet': '/static/iview/action-sheet/index',
+      'canvasdrawer': '../../../static/canvasdrawer/canvasdrawer'
     }
   }
 }

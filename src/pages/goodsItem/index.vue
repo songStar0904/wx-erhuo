@@ -46,7 +46,7 @@
       <navigator class="item" open-type="switchTab" url="/pages/index/main">
         <i-icon size="24" type="homepage" color="#ff9900"/>
       </navigator>
-      <div class="item">
+      <div class="item" @click="showShare">
         <i-icon size="24" type="share" color="#19be6b"/>
       </div>
       <div class="item" @click="loveGoods">
@@ -57,10 +57,21 @@
         <i-button type="success" shape="circle" i-class="small-btn">联系卖家</i-button>
       </div>
     </div>
+    <i-action-sheet :visible="isShowShare" show-cancel @cancel="closeShare" @iclick="toShare" :actions="share"></i-action-sheet>
+    <div class="share-card" :class="{ hide: !isShowShareCard }">
+      <img :src="shareImage" class="share-image" />
+      <div class="btn">
+        <i-button i-class="btn-item"  type="default" @click="isShowShareCard = false" li>取  消</i-button>
+        <i-button i-class="btn-item" type="warning" @click="saveImage">保存到相册</i-button>
+      </div>
+    </div>
+    <canvasdrawer :painting="painting" class="canvasdrawer" @getImage="getImage"/>
+    <i-toast id="toast" />
   </div>
 </template>
 <script>
-  import {formatSchool} from '@/utils'
+  import {formatSchool, formatPrice} from '@/utils'
+  import { $Toast } from '../../../static/iview/base/index'
   export default{
     data () {
       return {
@@ -81,6 +92,22 @@
           school: {},
           lmsg: []
         },
+        isShowShare: false,
+        isShowShareCard: false,
+        share: [{
+          name: '分享给朋友',
+          icon: 'share',
+          openType: 'share'
+        }, {
+          name: '分享到朋友圈',
+          icon: 'picture'
+        }],
+        painting: [],
+        shareImage: 'http://tmp/wx8dcca98a022387d8.o6zAJs12HRg8_H20U1TF….7QPNQaAC0vYxff6a250bddd161b19280035a8b6e7422.png',
+        bgShadow: '/static/images/bg-shadow.jpg',
+        wechat: '/static/images/wechat.jpg',
+        cardWidth: 275,
+        imgWidth: 200,
         inputValue: '',
         indicatorDots: true,
         interval: 5000,
@@ -113,6 +140,116 @@
         }).catch(r => {
           that.goods.isLove = !that.goods.isLove
         })
+      },
+      showShare () {
+        this.isShowShare = true
+      },
+      closeShare () {
+        this.isShowShare = false
+      },
+      toShare ({target: {index}}) {
+        if (index === 1) {
+          // 制作分享图片
+          this.drawCard()
+        }
+      },
+      getImage (event) {
+        console.log(event)
+        $Toast.hide()
+        this.isShowShareCard = true
+        this.shareImage = event.target.tempFilePath
+      },
+      saveImage () {
+        let that = this
+        wx.saveImageToPhotosAlbum({
+          filePath: this.shareImage,
+          success (res) {
+            wx.showToast({
+              title: '保存图片成功',
+              icon: 'success',
+              duration: 2000
+            })
+            that.isShowShareCard = false
+          }
+        })
+      },
+      drawCard () {
+        this.closeShare()
+        $Toast({
+          content: '卡片制作中',
+          type: 'loading'
+        })
+        let {cardWidth, imgWidth, bgShadow, wechat, goods} = this
+        this.painting = {
+          width: cardWidth,
+          height: 450,
+          views: [
+            {
+              type: 'rect',
+              background: '#fff',
+              top: 0,
+              left: 0,
+              width: cardWidth,
+              height: 450
+            },
+            {
+              type: 'image',
+              url: bgShadow,
+              left: (cardWidth - imgWidth - 6) / 2,
+              top: 27.5,
+              width: imgWidth + 6,
+              height: 255
+            },
+            {
+              type: 'image',
+              url: 'cloud://wx-erhuo-da63b9.7778-wx-erhuo-da63b9/goods/20181011/1539236894068.png',
+              left: (cardWidth - imgWidth) / 2,
+              top: 30,
+              width: imgWidth,
+              height: 190
+            },
+            {
+              type: 'text',
+              content: goods.name,
+              textAlign: 'center',
+              top: 230,
+              left: cardWidth / 2
+            },
+            {
+              type: 'text',
+              content: `￥${formatPrice(goods.price)}`,
+              textAlign: 'center',
+              top: 255,
+              left: cardWidth / 2,
+              color: '#EE7942'
+            },
+            {
+              type: 'image',
+              url: wechat,
+              left: (cardWidth - 75) / 2,
+              top: 300,
+              width: 75,
+              height: 75
+            },
+            {
+              type: 'text',
+              content: '长按图片识别小程序码',
+              fontSize: 14,
+              textAlign: 'center',
+              top: 390,
+              left: cardWidth / 2
+            },
+            {
+              type: 'text',
+              content: '*实际价格以页面展示为准',
+              color: '#80848f',
+              fontSize: 11,
+              textAlign: 'center',
+              top: 415,
+              left: cardWidth / 2
+            }
+          ]
+        }
       }
     },
     /**
@@ -281,5 +418,32 @@ page{
   height: 60rpx;
   line-height: 60rpx;
   margin-right: 0;
+}
+.share-card{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color:rgba(55, 55, 55, 0.6);
+  z-index: 999;
+}
+.share-card>.share-image{
+  width: 550rpx;
+  height: 900rpx;
+  margin-bottom: 50rpx;
+}
+.share-card>.btn{
+  width: 550rpx;
+  display: flex;
+  justify-content: space-between;
+}
+.share-card>.btn .btn-item{
+  width: 220rpx;
+  margin: 0;
 }
 </style>
