@@ -22,6 +22,12 @@ exports.main = async (event, context) => {
         _id: true
       }).get()
     good.user = user.data[0]
+    let isLove = await db.collection('love')
+    .where({
+      gid: _id,
+      uid: event.userInfo.openId
+    }).count()
+    good.isLove = !!isLove.total
     let classify = await db.collection('classify')
       .where({
         _id: good.cid

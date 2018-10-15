@@ -7,10 +7,11 @@ const db = cloud.database()
 exports.main = async (event, context) => {
   try {
     let { avatarUrl, address, nickName, number, gender, sign } = event
+    let _id = event.userInfo.openId
     let hasUser = await db.collection('user').where({
-      _openid: event.userInfo.openId // 填入当前用户 openid
+      _id // 填入当前用户 openid
     }).count()
-    if (event._id || hasUser) {
+    if (hasUser >= 0) {
       return await db.collection('user').doc(event._id).update({
         // data 传入需要局部更新的数据
         data: { avatarUrl, address, nickName, number, gender, sign }
@@ -18,8 +19,7 @@ exports.main = async (event, context) => {
     } else {
       return await db.collection('user').add({
         data: {
-          avatarUrl, address, nickName, number, gender, sign,
-          _openid: event.userInfo.openId
+          _id, avatarUrl, address, nickName, number, gender, sign
         }
       })
     }

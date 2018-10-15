@@ -9,6 +9,7 @@ export default {
     usingComponents: {
       'i-card': '/static/iview/card/index',
       'i-button': '/static/iview/button/index',
+      'i-icon': '/static/iview/icon/index',
       'skeleton': '/static/skeleton/skeleton'
     }
   }

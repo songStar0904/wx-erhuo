@@ -78,7 +78,7 @@ export default {
           required: '亲， 你的头像呢？'
         },
         nickName: {
-          required: '请给自己取个响亮的名字！',
+          required: '给自己取个响亮的名字',
           maxLength: '名字不能超过11个字符！'
         },
         gender: {
@@ -95,9 +95,10 @@ export default {
       return this.userInfo.gender === 1 ? '男' : '女'
     }
   },
-  created () {
+  mounted () {
     this.validate = new WxValidate(this.rules, this.msgs)
     this.userInfo = wx.getStorageSync('userInfo')
+    console.log('sss', wx.getStorageSync('userInfo'))
   },
   methods: {
     changeGender ({target: {value}}) {

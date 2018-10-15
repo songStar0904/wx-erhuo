@@ -19,12 +19,6 @@ exports.main = async(event, context) => {
       school,
       address
     } = event
-    
-    let uid = await db.collection('user').where({
-      _openid: openId // 填入当前用户 openid
-    }).field({
-      _id: true
-    }).get()
 
     let cid = classify._id
     let date = new Date().getTime()
@@ -51,7 +45,7 @@ exports.main = async(event, context) => {
           oprice,
           detail,
           cid,
-          uid: uid.data[0]._id,
+          uid: openId,
           icon,
           date,
           school,

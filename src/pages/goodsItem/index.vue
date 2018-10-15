@@ -43,17 +43,25 @@
       <comment-box :lmsg="lmsg"></comment-box>
     </div> -->
     <div class="footer">
-      <i-button type="success" shape="circle" i-class="btn">联系卖家</i-button>
+      <navigator class="item" open-type="switchTab" url="/pages/index/main">
+        <i-icon size="24" type="homepage" color="#ff9900"/>
+      </navigator>
+      <div class="item">
+        <i-icon size="24" type="share" color="#19be6b"/>
+      </div>
+      <div class="item" @click="loveGoods">
+        <i-icon size="24" type="like_fill" color="#ed3f14" v-if="goods.isLove"/>
+        <i-icon size="24" type="like" color="#ed3f14" v-else/>
+      </div>
+      <div class="btn">
+        <i-button type="success" shape="circle" i-class="small-btn">联系卖家</i-button>
+      </div>
     </div>
   </div>
 </template>
 <script>
-  import commentBox from '@/components/commentBox'
   import {formatSchool} from '@/utils'
   export default{
-    components: {
-      commentBox
-    },
     data () {
       return {
         goods: {
@@ -63,6 +71,7 @@
           icon: [],
           detail: '详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情',
           user: {
+            nickName: 'name',
             avatarUrl: '/static/images/user-unlogin.png',
             number: 123456789
           },
@@ -90,6 +99,20 @@
     methods: {
       send_msg () {
         console.log(this.inputValue)
+      },
+      loveGoods () {
+        let that = this
+        that.goods.isLove = !that.goods.isLove
+        wx.cloud.callFunction({
+          name: 'setLove',
+          data: {
+            gid: that.goods._id
+          }
+        }).then(res => {
+          console.log(res)
+        }).catch(r => {
+          that.goods.isLove = !that.goods.isLove
+        })
       }
     },
     /**
@@ -109,7 +132,7 @@
           }
         }).then(res => {
           this.goods = res.result
-          console.log(this.goods)
+          console.log('goods:', this.goods)
           wx.setNavigationBarTitle({ title: `二货 - ${this.goods.name}` })
           wx.hideLoading()
           this.hasData = true
@@ -139,7 +162,7 @@
 </script>
 <style>
 page{
-  margin-bottom: 100rpx;
+  margin-bottom: 110rpx;
 }
 .goods-info {
 	padding: 20rpx;
@@ -238,9 +261,25 @@ page{
   width: 100%;
   background: #fff;
   border-top: 1rpx solid #eee;
+  display: flex;
+  align-items: center;
+  padding: 0 40rpx;
+  box-sizing: border-box;
 }
-.footer .btn{
+.footer>.item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 20rpx;
+  color: #666;
+  margin-right: 40rpx;
+}
+.footer>.btn{
+  flex-grow: 1;
+}
+.footer>.btn .small-btn{
   height: 60rpx;
   line-height: 60rpx;
+  margin-right: 0;
 }
 </style>

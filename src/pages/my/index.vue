@@ -96,7 +96,7 @@ export default {
         data: this.userInfo
       }).then(res => {
         console.log(res)
-        this.userInfo = res.result
+        this.userInfo._id = res.result._id
         wx.setStorageSync('userInfo', this.userInfo)
       })
     },
