@@ -319,7 +319,6 @@ class WxValidate {
 
         // 遍历某个指定字段的所有规则，依次验证规则，否则缓存错误信息
         for (let method in rules) {
-
             // 判断验证方法是否存在
             if (this.isValidMethod(method)) {
 

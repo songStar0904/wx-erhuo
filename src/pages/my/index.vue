@@ -5,7 +5,7 @@
         <image class="avatar" :src="userInfo.avatarUrl" mode="aspectFill"></image>
         <view class="username">{{userInfo.nickName}}</view>
       </button>
-      <div class="user-base-info" v-else>
+      <div class="user-base-info" @click="toUrl('/pages/userInfo/main')" v-else>
         <image class="avatar" :src="userInfo.avatarUrl" mode="aspectFill"></image>
         <view class="username">{{userInfo.nickName}}</view>
       </div>
@@ -32,10 +32,25 @@
       <i-cell title="关于我们" url="">
         <i-icon type="setup" slot="icon" size="20" />
       </i-cell>
-      <i-cell title="客服热线" url="">
+      <!-- <i-cell title="客服热线" url="">
         <i-icon type="translation" slot="icon" size="20" />
         <span slot="footer">0731-5558888</span>
-      </i-cell>
+      </i-cell> -->
+      <button class="hide" open-type="contact">
+        <i-cell title="联系客服" url="">
+          <i-icon type="customerservice" slot="icon" size="20" />
+        </i-cell>
+      </button>
+      <button class="hide" open-type="share">
+        <i-cell title="分享朋友" url="">
+          <i-icon type="share" slot="icon" size="20" color="#19be6b"/>
+        </i-cell>
+      </button>
+      <button class="hide" open-type="feedback">
+        <i-cell title="意见反馈" url="">
+          <i-icon type="prompt" slot="icon" size="20" />
+        </i-cell>
+      </button>
     </i-cell-group>
   </div>
 </template>
@@ -48,6 +63,8 @@ export default {
         nickName: '点击获得用户名',
         number: '',
         address: '',
+        gender: 1,
+        sign: '',
         _id: 0
       }
     }
@@ -55,10 +72,22 @@ export default {
   created () {
     this.getUserInfo()
   },
+  onShareAppMessage (res) {
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    return {
+      title: `最二的校园二货交易平台，你确定不要加入？`,
+      imageUrl: '/static/images/share.jpg',
+      path: `/pages/index/main`
+    }
+  },
   methods: {
     onGetUserInfo ({ target: { userInfo } }) {
       this.userInfo.avatarUrl = userInfo.avatarUrl
       this.userInfo.nickName = userInfo.nickName
+      this.userInfo.gender = userInfo.gender
       this.saveUserInfo()
     },
     saveUserInfo () {
@@ -67,7 +96,8 @@ export default {
         data: this.userInfo
       }).then(res => {
         console.log(res)
-        this.userInfo._id = res.result._id
+        this.userInfo = res.result
+        wx.setStorageSync('userInfo', this.userInfo)
       })
     },
     getUserInfo () {
@@ -77,7 +107,13 @@ export default {
         console.log(res)
         if (res.result.data.length) {
           this.userInfo = res.result.data[0]
+          wx.setStorageSync('userInfo', this.userInfo)
         }
+      })
+    },
+    toUrl (url) {
+      wx.navigateTo({
+        url
       })
     }
   }

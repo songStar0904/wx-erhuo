@@ -1,5 +1,4 @@
 <template>
-  
   <div class="bg-gray skeleton">
     <skeleton selector="skeleton"
           loading="chiaroscuro"
@@ -25,12 +24,14 @@
     	<div class="goods-address info-item skeleton-rect"><span class="label">地址：</span>{{goods.address}}</div>
     	<div class="goods-detail skeleton-rect">{{goods.detail}}</div>
     </div>
-    <i-card :title="goods.user.nickName" extra="查看更多" :thumb="goods.user.avatarUrl" i-class="skeleton-rect card-user">
-      <view slot="content" class="skeleton-rect">联系方式： {{goods.user.number}}</view>
-      <view slot="footer" class="skeleton-rect">发布学校： {{goods.school.name}}</view>
-  </i-card>
-    <div class="lmsg">
-    	<!-- <div class="lmsg-heard clearfix">
+    <div class="card-user">
+      <i-card :title="goods.user.nickName" extra="查看更多" :thumb="goods.user.avatarUrl">
+        <view slot="content" class="skeleton-rect">联系方式： {{goods.user.number}}</view>
+        <view slot="footer" class="skeleton-rect">发布学校： {{goods.school.name}}</view>
+      </i-card>
+    </div>
+    <!-- <div class="lmsg">
+    	<div class="lmsg-heard clearfix">
     		<div class="fl">留言（{{lmsg.length}}）</div>
     		<div class="fr">{{goods.fans_num}}人想要</div>
     	</div>
@@ -39,8 +40,8 @@
         <input v-model="inputValue" maxlength="255" placeholder="您有什么想说的..." class="input"/>
         <button type="primary" size="mini" class="btn" @click="send_msg" > 发送 </button>
       </div>
-      <comment-box :lmsg="lmsg"></comment-box> -->
-    </div>
+      <comment-box :lmsg="lmsg"></comment-box>
+    </div> -->
     <div class="footer">
       <i-button type="success" shape="circle" i-class="btn">联系卖家</i-button>
     </div>
@@ -118,20 +119,31 @@
         })
       }
     },
-
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady () {
       wx.setNavigationBarTitle({ title: '二货' })
+    },
+    onShareAppMessage (res) {
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+        console.log(res.target)
+      }
+      return {
+        title: `这里有一件【${this.goods.name}】等你来认领`,
+        path: `/pages/goodsItem/main?id=${this.goods._id}`
+      }
     }
   }
 </script>
 <style>
+page{
+  margin-bottom: 100rpx;
+}
 .goods-info {
 	padding: 20rpx;
 	background: #fff;
-  margin-bottom: 40rpx;
   /*
 	//font-size: 27rpx;*/
 }
@@ -174,6 +186,7 @@
 	font-size: 27rpx;
 }
 .card-user{
+  padding: 32rpx 0;
 }
 .card-user image{
 	width: 80rpx;
@@ -184,7 +197,6 @@
 .lmsg {
 	background: #fff;
   margin-top: 40rpx;
-  margin-bottom: 110rpx;
 	padding: 20rpx;
 	font-size: 28rpx;
 }
@@ -228,7 +240,7 @@
   border-top: 1rpx solid #eee;
 }
 .footer .btn{
-  height: 70rpx;
-  line-height: 70rpx;
+  height: 60rpx;
+  line-height: 60rpx;
 }
 </style>

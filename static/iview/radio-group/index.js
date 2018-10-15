@@ -19,7 +19,7 @@ Component({
             type: String,
             value: '',
             observer: 'changeCurrent'
-        },
+        }
     },
     methods: {
         changeCurrent(val = this.data.current) {
