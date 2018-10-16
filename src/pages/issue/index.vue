@@ -31,7 +31,7 @@
 	    		<i-input  :value="goods.price" @change="changePrice" name="price" type="number"title="现价" maxlength="10"/>
 	    		<i-input :value="goods.oprice" @change="changeOprice" name="oprice" type="number"title="原价" maxlength="10"></i-input>
 	    	</div>
-	    	<textarea class="goods-detail " :class="{hide:(isShowClassify || isShowSchool)}" :value="goods.detail" @input="changeDetail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
+	    	<textarea class="goods-detail" :class="{hide:(isShowClassify || isShowSchool)}" :value="goods.detail" @input="changeDetail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
 	    	<div class="goods-detail"  :class="{hide:(!isShowClassify && !isShowSchool)}" >
             <span v-if="goods.detail">{{goods.detail}}</span>
             <span v-else class="textarea-placeholder">在此描述你的二货。如：品牌，规格，成色等信息。</span>
@@ -45,7 +45,7 @@
 		</i-cell-group>
 		<i-input v-if="goods.school" :value="goods.address" @change="changeAddress" name="address" placeholder="详细地址，如：北校区X区X栋101" maxlength="50"></i-input>
 	    <div class="issue fixed-footer">
-	      <i-button long="true" type="success" >发布</i-button>
+	      <i-button long="true" type="success" >{{goods._id ? '保存' : '发布'}}</i-button>
 	      <!-- i-button 还未支持formType="submit" 用button做临时处理覆盖到i-button上-->
 	      <button formType="submit" style="height: 88rpx;position: absolute; top: 0;left: 0;right: 0;opacity: 0"></button>
 	    </div>
@@ -94,6 +94,7 @@ export default {
       isShowClassify: false,
       isShowSchool: false,
       isShowPrice: false,
+      loading: false,
       rules: {
         name: {
           required: true,
@@ -163,15 +164,49 @@ export default {
   mounted () {
     this.validate = new WxValidate(this.rules, this.msgs)
   },
+  onLoad (options) {
+    if (options.id) {
+      wx.setNavigationBarTitle({
+        title: '编辑'
+      })
+      this.getGoods(options.id)
+    } else {
+      wx.setNavigationBarTitle({
+        title: '发布'
+      })
+    }
+  },
+  onHide () {
+    console.log('hide')
+    wx.setStorageSync('goods', this.goods)
+  },
   onShow () {
+    console.log('show')
     if (wx.getStorageSync('goods')) {
       this.goods = wx.getStorageSync('goods')
     }
   },
-  onHide () {
-    wx.setStorageSync('goods', this.goods)
-  },
   methods: {
+    getGoods (id) {
+      wx.showLoading({
+        title: '加载中...'
+      })
+      wx.cloud.callFunction({
+        // 云函数名称
+        name: 'getOneGood',
+        // 传给云函数的参数
+        data: {
+          _id: id
+        }
+      }).then(res => {
+        wx.hideLoading()
+        this.goods = res.result
+        console.log('goods:', this.goods)
+      }).catch(e => {
+        wx.hideLoading()
+        console.error(e)
+      })
+    },
     chooseIcon () {
       let that = this
       wx.chooseImage({
@@ -320,6 +355,16 @@ export default {
             wx.switchTab({
               url: '/pages/index/main'
             })
+          } else if (res.result.errMsg === 'document.update:ok') {
+            wx.navigateBack({
+              delta: 1,
+              success () {
+                $Message({
+                  content: '保存成功！',
+                  type: 'success'
+                })
+              }
+            })
           } else {
             $Message({
               content: '发布失败，请重新发布！',
@@ -336,8 +381,11 @@ export default {
 <style>
 .issue-wrap{
 }
+.issue-wrap .spin{
+
+}
 .upload{
-    height: 200rpx;
+  height: 200rpx;
 	padding: 30rpx;
 	box-sizing: border-box;
 	display: flex;
@@ -418,7 +466,6 @@ export default {
 	display: flex;
 }
 .goods-detail{
-  z-index: -1;
 	width: 100%;
 	height: 200rpx;
 	border: none;

@@ -56,7 +56,7 @@
 }
 
 button.hide {
-  display: block;
+  display: block!important;
   padding-left: 0px;
   padding-right: 0px;
   line-height: 10px;

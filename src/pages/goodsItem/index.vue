@@ -103,7 +103,7 @@
           icon: 'picture'
         }],
         painting: [],
-        shareImage: 'http://tmp/wx8dcca98a022387d8.o6zAJs12HRg8_H20U1TF….7QPNQaAC0vYxff6a250bddd161b19280035a8b6e7422.png',
+        shareImage: '',
         bgShadow: '/static/images/bg-shadow.jpg',
         wechat: '/static/images/wechat.jpg',
         cardWidth: 275,
@@ -148,6 +148,7 @@
         this.isShowShare = false
       },
       toShare ({target: {index}}) {
+        this.isShowShare = false
         if (index === 1) {
           // 制作分享图片
           this.drawCard()
@@ -283,6 +284,9 @@
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady () {
+      wx.showShareMenu({
+        withShareTicket: true
+      })
       wx.setNavigationBarTitle({ title: '二货' })
     },
     onShareAppMessage (res) {
@@ -290,9 +294,11 @@
         // 来自页面内转发按钮
         console.log(res.target)
       }
+      console.log(this.goods.icon[0])
       return {
         title: `这里有一件【${this.goods.name}】等你来认领`,
-        path: `/pages/goodsItem/main?id=${this.goods._id}`
+        path: `/pages/goodsItem/main?id=${this.goods._id}`,
+        imageUrl: this.goods.icon[0]
       }
     }
   }
@@ -402,6 +408,7 @@ page{
   align-items: center;
   padding: 0 40rpx;
   box-sizing: border-box;
+  z-index: 9999;
 }
 .footer>.item{
   display: flex;

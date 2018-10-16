@@ -37,6 +37,18 @@ export default {
   components: {
     goodsList
   },
+  onTabItemTap (item) {
+    if (item.index === 1) {
+      wx.switchTab({
+        url: '/pages/index/main',
+        complete () {
+          wx.navigateTo({
+            url: '/pages/issue/main'
+          })
+        }
+      })
+    }
+  },
   methods: {
     init () {
       this.loadMore()
@@ -94,7 +106,7 @@ export default {
     // 调用应用实例的方法获取全局数据
     this.init()
   },
-  Onshow () {
+  onShow () {
     this.init()
   }
 }

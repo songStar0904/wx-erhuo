@@ -6,11 +6,17 @@ const db = cloud.database()
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
-    let {page, num} = event
-    return await db.collection('goods')
+    let {page = 1, num = 4, order = 'date', orderType = 'desc', uid} = event
+    let goods = db.collection('goods')
       .orderBy('date', 'desc')
       .limit(num)
-      .skip(page * num).get()
+      .skip(page * num)
+    if (uid) {
+      goods.where({
+        uid
+      })
+    }
+    return await goods.get()
   } catch (e) {
     return e
   }

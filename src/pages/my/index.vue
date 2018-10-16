@@ -11,22 +11,22 @@
       </div>
     </div>
     <div class="main">
-      <div class="main-item issue">
+      <navigator  class="main-item issue" url="/pages/myIssue/main">
         <i-icon type="document_fill" size="32" color="#19be6b" />
         <span>我发布的</span>
-      </div>
-      <div class="main-item said">
+      </navigator >
+      <navigator  class="main-item said">
         <i-icon type="task_fill" size="32" color="#19be6b" />
         <span>我卖出的</span>
-      </div>
-      <div class="main-item buy">
+      </navigator >
+      <navigator  class="main-item buy">
         <i-icon type="service_fill" size="32" color="#19be6b" />
         <span>我买到的</span>
-      </div>
-      <div class="main-item want">
+      </navigator >
+      <navigator  class="main-item want">
         <i-icon type="tasklist_fill" size="32" color="#19be6b" />
         <span>我想要的</span>
-      </div>
+      </navigator >
     </div>
     <i-cell-group>
       <i-cell title="关于我们" url="">

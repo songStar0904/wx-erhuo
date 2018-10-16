@@ -17,9 +17,9 @@ exports.main = async(event, context) => {
         openId
       },
       school,
-      address
+      address,
+      _id
     } = event
-
     let cid = classify._id
     let date = new Date().getTime()
     if (event._id) {
@@ -32,7 +32,6 @@ exports.main = async(event, context) => {
           detail,
           cid,
           icon,
-          date,
           school,
           address
         }

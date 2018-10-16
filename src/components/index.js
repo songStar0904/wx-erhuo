@@ -1,9 +1,11 @@
 import goodsList from './goodsList'
+import goodsList2 from './goodsList2'
 import commentBox from './commentBox'
-import Tag from './Tag'
+import noData from './noData'
 
 export {
   goodsList,
+  goodsList2,
   commentBox,
-  Tag
+  noData
 }
