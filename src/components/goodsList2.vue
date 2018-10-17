@@ -15,8 +15,8 @@
       		<span class="oprice">￥{{goods.oprice}}</span>
       	</p>
       	<div class="btn-box">
-      		<i-button i-class="btn" type="success" size="small" inline @click.stop="edit(goods._id)">编辑</i-button>
-      		<i-button i-class="btn" type="warning" size="small" inline @click.stop="del(goods._id)">删除</i-button>
+      		<i-button i-class="btn" type="success" size="small" inline @click.stop="edit(goods._id)" v-if="uid === goods.uid">编辑</i-button>
+      		<i-button i-class="btn" type="warning" size="small" inline @click.stop="del(goods._id)">{{type === 'want' ? '不想要' : '删除'}}</i-button>
       	</div>
       </div>
 	 </navigator>
@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  props: ['goodsData'],
+  props: ['goodsData', 'type'],
   methods: {
     edit (_id) {
       wx.navigateTo({
@@ -34,6 +34,11 @@ export default {
     },
     del (_id) {
       this.$emit('delGoods', _id)
+    }
+  },
+  computed: {
+    uid () {
+      return wx.getStorageSync('userInfo')._id || null
     }
   }
 }

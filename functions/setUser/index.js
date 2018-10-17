@@ -12,10 +12,17 @@ exports.main = async (event, context) => {
       _id // 填入当前用户 openid
     }).count()
     if (hasUser >= 0) {
-      return await db.collection('user').doc(event._id).update({
-        // data 传入需要局部更新的数据
-        data: { avatarUrl, address, nickName, number, gender, sign }
-      })
+      if (event._id === _id) {
+        return await db.collection('user').doc(event._id).update({
+          // data 传入需要局部更新的数据
+          data: { avatarUrl, address, nickName, number, gender, sign }
+        })
+      } else {
+        return {
+          code: 400,
+          errMsg: '你没有权限！'
+        }
+      }
     } else {
       return await db.collection('user').add({
         data: {

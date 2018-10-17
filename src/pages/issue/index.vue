@@ -176,12 +176,10 @@ export default {
       })
     }
   },
-  onHide () {
-    console.log('hide')
+  onUnload () {
     wx.setStorageSync('goods', this.goods)
   },
   onShow () {
-    console.log('show')
     if (wx.getStorageSync('goods')) {
       this.goods = wx.getStorageSync('goods')
     }

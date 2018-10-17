@@ -13,7 +13,9 @@ export default {
       'i-button': '/static/iview/button/index',
       'i-icon': '/static/iview/icon/index',
       'i-cell-group': '/static/iview/cell-group/index',
-      'i-cell': '/static/iview/cell/index'
+      'i-cell': '/static/iview/cell/index',
+      'i-modal': '/static/iview/modal/index',
+      'i-message': '/static/iview/message/index'
     }
   }
 }

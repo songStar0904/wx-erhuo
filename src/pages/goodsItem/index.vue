@@ -26,7 +26,7 @@
     </div>
     <div class="card-user">
       <i-card :title="goods.user.nickName" extra="查看更多" :thumb="goods.user.avatarUrl">
-        <view slot="content" class="skeleton-rect">联系方式： {{goods.user.number}}</view>
+        <view slot="content" class="skeleton-rect">联系方式： {{goods.user.number || '无'}}</view>
         <view slot="footer" class="skeleton-rect">发布学校： {{goods.school.name}}</view>
       </i-card>
     </div>

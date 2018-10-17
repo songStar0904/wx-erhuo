@@ -23,19 +23,28 @@ exports.main = async(event, context) => {
     let cid = classify._id
     let date = new Date().getTime()
     if (event._id) {
-      return await db.collection('goods').doc(event._id).update({
-        // data 传入需要局部更新的数据
-        data: {
-          name,
-          price,
-          oprice,
-          detail,
-          cid,
-          icon,
-          school,
-          address
+      let good = await db.collection('goods').where({_id}).field({uid: true}).get()
+      if (good.data[0].uid === openId) {
+        return await db.collection('goods').doc(event._id).update({
+          // data 传入需要局部更新的数据
+          data: {
+            name,
+            price,
+            oprice,
+            detail,
+            cid,
+            icon,
+            school,
+            address
+          }
+        })
+      } else {
+        return {
+          code: 400,
+          errMsg: '你没有权限！'
         }
-      })
+      }
+      
     } else {
       return await db.collection('goods').add({
         data: {

@@ -1,15 +1,15 @@
 <template>
-  <div class="my-issue">
+  <div class="my-want">
     <i-tabs :current="current" color="#19be6b" @change="changeTab">
-    	<i-tab key="said" title="在架二货">
+    	<i-tab key="said" title="在卖二货">
   		</i-tab>
-  		<i-tab key="nosaid" title="下架二货"></i-tab>
+  		<i-tab key="nosaid" title="失效二货"></i-tab>
   	</i-tabs>
   	<block v-if="!hasData && !loading">
-  	    <no-data title="暂无数据" :action="{title: '现在去发布', url: '/pages/issue/main'}" ></no-data>
+  	    <no-data title="暂无数据" :action="{title: '现在去逛逛', url: '/pages/index/main'}" ></no-data>
   	</block>
   	<div v-else>
-  		<goods-list2 :goodsData="goodsData" @delGoods="showDel"></goods-list2>
+  		<goods-list2 :goodsData="goodsData" type="want" @delGoods="showDel"></goods-list2>
         <i-load-more :tip="loading ? '玩命加载中' : '暂无数据'" :loading="loading" />
   	</div>
     <i-message id="message" />
@@ -81,10 +81,10 @@ export default {
         that.delAction[1].loading = true
         wx.cloud.callFunction({
           // 云函数名称
-          name: 'delGoods',
+          name: 'delLove',
           // 传给云函数的参数
           data: {
-            _id: that.delId
+            gid: that.delId
           }
         }).then(res => {
           console.log(res)
@@ -115,10 +115,10 @@ export default {
         data: {
           page: this.page++,
           num: this.num,
-          uid: this.uid
+          type: 'want'
         }
       }).then(res => {
-        let data = res.result.data
+        let data = res.result
         console.log(res)
         this.loading = false
         if (data.length) {

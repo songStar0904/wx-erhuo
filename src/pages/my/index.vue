@@ -15,21 +15,21 @@
         <i-icon type="document_fill" size="32" color="#19be6b" />
         <span>我发布的</span>
       </navigator >
-      <navigator  class="main-item said">
+      <div  class="main-item said" url="" @click="warning('该功能暂未开放！')">
         <i-icon type="task_fill" size="32" color="#19be6b" />
         <span>我卖出的</span>
-      </navigator >
-      <navigator  class="main-item buy">
+      </div >
+      <div  class="main-item buy" url="" @click="warning('该功能暂未开放！')">
         <i-icon type="service_fill" size="32" color="#19be6b" />
         <span>我买到的</span>
-      </navigator >
-      <navigator  class="main-item want">
+      </div >
+      <navigator  class="main-item want" url="/pages/myWant/main">
         <i-icon type="tasklist_fill" size="32" color="#19be6b" />
         <span>我想要的</span>
       </navigator >
     </div>
     <i-cell-group>
-      <i-cell title="关于我们" url="">
+      <i-cell title="关于二货" url="" @click="isShowAbout = true">
         <i-icon type="setup" slot="icon" size="20" />
       </i-cell>
       <!-- <i-cell title="客服热线" url="">
@@ -52,9 +52,24 @@
         </i-cell>
       </button>
     </i-cell-group>
+    <i-modal title="关于二货" :visible="isShowAbout" @ok="closeAbout" @cancel="closeAbout" ok-text="知道啦" i-class="about-box">
+      <div class="about">
+        <p><span></span>二货是针对校园二手物品的交易平台。由于此公众平台的主体是个人，所以暂时没有微信支付功能和自动获取手机绑定功能，请见谅。</p>
+        <h3>二货小程序所用到的技术栈</h3>
+        <p>- 微信小程序</p>
+        <p>- Mpvue</p>
+        <p>- iView-Weapp</p>
+        <p>- 小程序·云开发</p>
+        <h3>关于作者</h3>
+        <p>github：https://github.com/songStar0904</p>
+        <p>email：   1043328710@qq.com</p>
+      </div>
+  </i-modal>
+  <i-message id="message" />
   </div>
 </template>
 <script>
+import { $Message } from '../../../static/iview/base/index'
 export default {
   data () {
     return {
@@ -66,7 +81,8 @@ export default {
         gender: 1,
         sign: '',
         _id: 0
-      }
+      },
+      isShowAbout: false
     }
   },
   created () {
@@ -84,6 +100,12 @@ export default {
     }
   },
   methods: {
+    warning (msg) {
+      $Message({
+        content: msg,
+        type: 'warning'
+      })
+    },
     onGetUserInfo ({ target: { userInfo } }) {
       this.userInfo.avatarUrl = userInfo.avatarUrl
       this.userInfo.nickName = userInfo.nickName
@@ -110,6 +132,9 @@ export default {
           wx.setStorageSync('userInfo', this.userInfo)
         }
       })
+    },
+    closeAbout () {
+      this.isShowAbout = false
     },
     toUrl (url) {
       wx.navigateTo({
@@ -163,6 +188,35 @@ export default {
 
 .main>.main-item>span {
   margin-top: 10rpx;
+}
+.about-box {
+  overflow: hidden!important;
+}
+.about-box>view{
+  width: 600rpx;
+}
+.about-box>view>view>view{
+  max-height: 900rpx !important;
+}
+.about{
+  text-align: left;
+  padding: 0 40rpx;
+}
+
+.about>p{
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+}
+.about>p>span{
+  display: inline-block;
+  width: 50rpx;
+}
+.about>h3{
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin: 30rpx 0 20rpx;
 }
 
 </style>
