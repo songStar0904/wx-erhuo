@@ -24,7 +24,7 @@
     	<div class="goods-address info-item skeleton-rect"><span class="label">地址：</span>{{goods.address}}</div>
     	<div class="goods-detail skeleton-rect">{{goods.detail}}</div>
     </div>
-    <div class="card-user">
+    <div class="card-user" @click="toUserHome('/pages/userHome/main?id=' + goods.user._id)">
       <i-card :title="goods.user.nickName" extra="查看更多" :thumb="goods.user.avatarUrl">
         <view slot="content" class="skeleton-rect">联系方式： {{goods.user.number || '无'}}</view>
         <view slot="footer" class="skeleton-rect">发布学校： {{goods.school.name}}</view>
@@ -124,8 +124,11 @@
       }
     },
     methods: {
-      send_msg () {
-        console.log(this.inputValue)
+      toUserHome (url) {
+        wx.setStorageSync('user', this.goods.user)
+        wx.navigateTo({
+          url
+        })
       },
       loveGoods () {
         let that = this

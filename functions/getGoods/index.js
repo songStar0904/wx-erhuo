@@ -28,7 +28,7 @@ exports.main = async(event, context) => {
       }
       return goods
     } else {
-      let goods = db.collection('goods')
+      let goods = await db.collection('goods')
         .orderBy(order, orderType)
         .limit(num)
         .skip(page * num)
@@ -37,7 +37,12 @@ exports.main = async(event, context) => {
           uid
         })
       }
-      return await goods.get()
+      let count = await goods.count()
+      let data = await goods.get()
+      return {
+        data: data.data,
+        count: count.total
+      }
     }
 
   } catch (e) {

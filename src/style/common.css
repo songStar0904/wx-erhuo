@@ -50,11 +50,15 @@
   border-radius: 4px;
   font-size: 14px;
 }
-
 .hide {
   display: none!important;
 }
-
+.card-user image{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
 button.hide {
   display: block!important;
   padding-left: 0px;

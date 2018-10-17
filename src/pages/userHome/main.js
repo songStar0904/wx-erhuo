@@ -6,19 +6,17 @@ app.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '个人信息',
+    navigationBarTitleText: '个人主页',
     navigationBarBackgroundColor: '#fff',
     navigationBarTextStyle: 'black',
     usingComponents: {
       'i-button': '/static/iview/button/index',
       'i-icon': '/static/iview/icon/index',
-      'i-cell-group': '/static/iview/cell-group/index',
-      'i-cell': '/static/iview/cell/index',
-      'i-input': '/static/iview/input/index',
-      'i-radio-group': '/static/iview/radio-group/index',
-      'i-radio': '/static/iview/radio/index',
+      'i-card': '/static/iview/card/index',
       'i-toast': '/static/iview/toast/index',
-      'i-action-sheet': '/static/iview/action-sheet/index'
+      'i-row': '/static/iview/row/index',
+      'i-col': '/static/iview/col/index',
+      'i-load-more': '/static/iview/load-more/index'
     }
   }
 }

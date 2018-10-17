@@ -22,6 +22,8 @@
       <i-cell title="联系电话">
         <div slot="footer"><input :value="userInfo.number" name="number" placeholder="方便买家联系你哦"></input></div>
       </i-cell>
+      <i-cell title="学校" is-link :value="userInfo.school ? userInfo.school.name : '选择学校'" @iclick="showSchool">
+      </i-cell>
       <i-cell title="宿舍区（地址)">
         <div slot="footer"><input :value="userInfo.address" name="address" placeholder="二货的取货地址啦"></input></div>
       </i-cell>
@@ -32,6 +34,19 @@
       <button formType="submit" style="height: 88rpx;position: absolute; top: 0;left: 0;right: 0;opacity: 0"></button>
     </div>
     </form>
+    <i-action-sheet :visible="isShowSchool" show-cancel @cancel="closeSchool" @iclick="changeSchool">
+    <view slot="header" style="color: #333;padding: 32rpx;">
+        选择学校
+    </view>
+  	    <!-- 数据多后使用 -->
+		<i-index slot="content" >
+			<i-index-item v-for="(item, index) in school" :key="index" :name="item.key">
+				<div v-for="(s, i) in item.list" :key="i" @click="changeSchool(s)" class="school-item">
+					{{s.name}}
+				</div>
+			</i-index-item>
+		</i-index>
+	</i-action-sheet>
 	<i-toast id="toast" />
   </div>
 </template>
@@ -42,6 +57,8 @@ import { $Toast } from '../../../static/iview/base/index'
 export default {
   data () {
     return {
+      isShowSchool: false,
+      school: [],
       userInfo: {
         avatarUrl: '/static/images/user-unlogin.png',
         nickName: '点击获得用户名',
@@ -49,7 +66,8 @@ export default {
         gender: 1,
         sign: '',
         address: '',
-        _id: 0
+        _id: 0,
+        school: {}
       },
       gender: [{
         id: 1,
@@ -101,6 +119,31 @@ export default {
     console.log('sss', wx.getStorageSync('userInfo'))
   },
   methods: {
+    showSchool () {
+      console.log(this.school)
+      if (this.school.length > 0) {
+        this.isShowSchool = true
+      } else {
+        wx.cloud.callFunction({
+          // 云函数名称
+          name: 'getSchool'
+        }).then(res => {
+          console.log(res)
+          this.isShowSchool = true
+          this.school = res.result.data
+          console.log(this.school)
+        }).catch(res => {
+          console.log('error' + res)
+        })
+      }
+    },
+    closeSchool () {
+      this.isShowSchool = false
+    },
+    changeSchool (school) {
+      this.userInfo.school = school
+      this.closeSchool()
+    },
     changeGender ({target: {value}}) {
       this.userInfo.gender = value === '男' ? 1 : 0
     },
@@ -110,11 +153,18 @@ export default {
         data: userInfo
       }).then(res => {
         console.log(res)
-        $Toast({
-          type: 'success',
-          content: '保存成功'
-        })
-        wx.setStorageSync('userInfo', userInfo)
+        if (res.result.stats.updated > 0) {
+          $Toast({
+            type: 'success',
+            content: '保存成功'
+          })
+          wx.setStorageSync('userInfo', userInfo)
+        } else {
+          $Toast({
+            type: 'error',
+            content: '保存失败'
+          })
+        }
       })
     },
     uploadAvatarUrl () {
@@ -141,6 +191,7 @@ export default {
     formSubmit ({target: {value}}) {
       value.avatarUrl = this.userInfo.avatarUrl
       value.gender = this.userInfo.gender
+      value.school = this.userInfo.school
       if (!this.validate.checkForm(value)) {
         const error = this.validate.errorList[0]
         $Toast({
@@ -179,6 +230,9 @@ export default {
   font-size: 30rpx;
   color: #333;
 }
-
+.school-item{
+	font-size: 30rpx;
+	padding: 20rpx 40rpx;
+}
 
 </style>

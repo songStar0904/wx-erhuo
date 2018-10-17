@@ -2,7 +2,7 @@
   <div class="no-data">
   	<img src="/static/images/no_data.png" alt="">
   	<div class="title">{{title}}</div>
-  	<navigator class="btn" :url="action.url" hover-class="none" :open-type="action.url === '/pages/index/main' ? 'switchTab': 'navigate'">{{action.title}}</navigator>
+  	<navigator v-if="action" class="btn" :url="action.url" hover-class="none" :open-type="action.url === '/pages/index/main' ? 'switchTab': 'navigate'">{{action.title}}</navigator>
   </div>
 </template>
 <script>
