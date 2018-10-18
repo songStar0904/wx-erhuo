@@ -124,10 +124,7 @@ export default {
       if (this.school.length > 0) {
         this.isShowSchool = true
       } else {
-        wx.cloud.callFunction({
-          // 云函数名称
-          name: 'getSchool'
-        }).then(res => {
+        this.fetch('getSchool').then(res => {
           console.log(res)
           this.isShowSchool = true
           this.school = res.result.data
@@ -148,10 +145,7 @@ export default {
       this.userInfo.gender = value === '男' ? 1 : 0
     },
     setUserInfo (userInfo) {
-      wx.cloud.callFunction({
-        name: 'setUser',
-        data: userInfo
-      }).then(res => {
+      this.fetch('setUser', userInfo).then(res => {
         console.log(res)
         if (res.result.stats.updated > 0) {
           $Toast({

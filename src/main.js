@@ -1,12 +1,28 @@
 import Vue from 'vue'
 import App from './App'
-
 Vue.config.productionTip = false
 App.mpType = 'app'
 
 const app = new Vue(App)
 app.$mount()
 
+Vue.prototype.fetch = function (name, data) {
+  wx.showNavigationBarLoading()
+  return new Promise((resolve, reject) => {
+    wx.cloud.callFunction({
+      // 云函数名称
+      name,
+      // 传给云函数的参数
+      data
+    }).then(res => {
+      wx.hideNavigationBarLoading()
+      resolve(res)
+    }).catch(res => {
+      wx.hideNavigationBarLoading()
+      reject(res)
+    })
+  })
+}
 export default {
   // 这个字段走 app.json
   config: {

@@ -64,11 +64,8 @@ export default {
   },
   methods: {
     getUser (uid) {
-      wx.cloud.callFunction({
-        name: 'getUser',
-        data: {
-          uid
-        }
+      this.fetch('getUser', {
+        uid
       }).then((res) => {
         console.log(res)
         if (res.result.data.length) {
@@ -84,15 +81,10 @@ export default {
     },
     loadMore () {
       this.loading = true
-      wx.cloud.callFunction({
-        // 云函数名称
-        name: 'getGoods',
-        // 传给云函数的参数
-        data: {
-          page: this.page++,
-          num: this.num,
-          uid: this.uid
-        }
+      this.fetch('getGoods', {
+        page: this.page++,
+        num: this.num,
+        uid: this.uid
       }).then(res => {
         console.log(res)
         let data = res.result.data

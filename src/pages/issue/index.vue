@@ -212,13 +212,8 @@ export default {
       wx.showLoading({
         title: '加载中...'
       })
-      wx.cloud.callFunction({
-        // 云函数名称
-        name: 'getOneGood',
-        // 传给云函数的参数
-        data: {
-          _id: id
-        }
+      this.fetch('getOneGood', {
+        _id: id
       }).then(res => {
         wx.hideLoading()
         this.goods = res.result
@@ -296,10 +291,7 @@ export default {
       if (this.classify.length > 0) {
         this.isShowClassify = true
       } else {
-        wx.cloud.callFunction({
-          // 云函数名称
-          name: 'getClassify'
-        }).then(res => {
+        this.fetch('getClassify').then(res => {
           this.isShowClassify = true
           this.classify = res.result.data
         }).catch(res => {
@@ -319,10 +311,7 @@ export default {
       if (this.school.length > 0) {
         this.isShowSchool = true
       } else {
-        wx.cloud.callFunction({
-          // 云函数名称
-          name: 'getSchool'
-        }).then(res => {
+        this.fetch('getSchool').then(res => {
           console.log(res)
           this.isShowSchool = true
           this.school = res.result.data
@@ -355,10 +344,7 @@ export default {
           content: error.msg
         })
       } else {
-        wx.cloud.callFunction({
-          name: 'setGoods',
-          data
-        }).then(res => {
+        this.fetch('setGoods', data).then(res => {
           console.log(res)
           if (res.result.errMsg === 'collection.add:ok') {
             $Message({

@@ -98,13 +98,8 @@ export default {
       } else if (index === 1) {
         let that = this
         that.delAction[1].loading = true
-        wx.cloud.callFunction({
-          // 云函数名称
-          name: 'delGoods',
-          // 传给云函数的参数
-          data: {
-            _id: that.delId
-          }
+        this.fetch('delGoods', {
+          _id: that.delId
         }).then(res => {
           console.log(res)
           that.delAction[1].loading = false
@@ -128,15 +123,10 @@ export default {
     loadMore () {
       if (!this.hasMore) return
       this.loading = true
-      wx.cloud.callFunction({
-        // 云函数名称
-        name: 'getGoods',
-        // 传给云函数的参数
-        data: {
-          page: this.page++,
-          num: this.num,
-          uid: this.uid
-        }
+      this.fetch('getGoods', {
+        page: this.page++,
+        num: this.num,
+        uid: this.uid
       }).then(res => {
         wx.stopPullDownRefresh()
         let data = res.result.data

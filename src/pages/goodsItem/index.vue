@@ -133,11 +133,8 @@
       loveGoods () {
         let that = this
         that.goods.isLove = !that.goods.isLove
-        wx.cloud.callFunction({
-          name: 'setLove',
-          data: {
-            gid: that.goods._id
-          }
+        this.fetch('setLove', {
+          gid: that.goods._id
         }).then(res => {
           console.log(res)
         }).catch(r => {
@@ -269,13 +266,8 @@
         this.goods.icon = []
         this.hasData = false
         wx.showLoading({ title: '拼命加载中...' })
-        wx.cloud.callFunction({
-          // 云函数名称
-          name: 'getOneGood',
-          // 传给云函数的参数
-          data: {
-            _id: params.id
-          }
+        this.fetch('getOneGood', {
+          _id: params.id
         }).then(res => {
           this.goods = res.result
           console.log('goods:', this.goods)

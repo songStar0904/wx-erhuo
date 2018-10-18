@@ -56,14 +56,9 @@ export default {
     loadMore () {
       if (!this.hasMore) return
       this.loading = true
-      wx.cloud.callFunction({
-        // 云函数名称
-        name: 'getGoods',
-        // 传给云函数的参数
-        data: {
-          page: this.page++,
-          num: this.num
-        }
+      this.fetch('getGoods', {
+        page: this.page++,
+        num: this.num
       }).then(res => {
         let data = res.result.data
         console.log(res.result)
