@@ -5,7 +5,7 @@
           bgcolor="#FFF"
           v-if="!hasData"></skeleton>
     <swiper :indicator-dots="indicatorDots" class="skeleton-rect"
-      :interval="interval" indicator-color="rgba(255, 255, 255, .3)" indicator-active-color="#fff" style="height: 500rpx;">
+      :interval="interval" indicator-color="rgba(255, 255, 255, .3)" indicator-active-color="#fff" style="height: 600rpx;">
       <block v-for="(item, index) in goods.icon" :key="index">
         <swiper-item>
           <image :src="item" class="slide-image"/>
@@ -26,7 +26,7 @@
     </div>
     <div class="card-user" @click="toUserHome('/pages/userHome/main?id=' + goods.user._id)">
       <i-card :title="goods.user.nickName" extra="查看更多" :thumb="goods.user.avatarUrl">
-        <view slot="content" class="skeleton-rect">联系方式： {{goods.user.number || '无'}}</view>
+        <view slot="content" class="skeleton-rect">联系方式： {{goods.number || goods.user.number || '无'}}</view>
         <view slot="footer" class="skeleton-rect">发布学校： {{goods.school.name}}</view>
       </i-card>
     </div>
@@ -54,7 +54,7 @@
         <i-icon size="24" type="like" color="#ed3f14" v-else/>
       </div>
       <div class="btn">
-        <i-button type="success" shape="circle" i-class="small-btn">联系卖家</i-button>
+        <i-button type="success" shape="circle" i-class="small-btn" @click="call">联系卖家</i-button>
       </div>
     </div>
     <i-action-sheet :visible="isShowShare" show-cancel @cancel="closeShare" @iclick="toShare" :actions="share"></i-action-sheet>
@@ -142,6 +142,11 @@
           console.log(res)
         }).catch(r => {
           that.goods.isLove = !that.goods.isLove
+        })
+      },
+      call () {
+        wx.makePhoneCall({
+          phoneNumber: this.goods.number || this.goods.user.number
         })
       },
       showShare () {

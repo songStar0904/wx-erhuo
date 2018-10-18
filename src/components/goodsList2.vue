@@ -52,8 +52,8 @@ export default {
 	margin-left: 40rpx;
 }
 .goods-item img {
-	width: 150rpx;
-	height: 150rpx;
+	width: 160rpx;
+	height: 160rpx;
 }
 .goods-item>.goods-info{
 	width: 100%;

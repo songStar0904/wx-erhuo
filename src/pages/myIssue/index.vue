@@ -16,12 +16,14 @@
     <i-modal title="删除确认" :visible="isShowDel" :actions="delAction" @iclick="delGoods">
 	    <span>删除后无法恢复哦</span>
 	</i-modal>
+	<i-message id="message" />
   </div>
 </template>
 <script>
 import { formatTime } from '@/utils/index'
 import goodsList2 from '@/components/goodsList2'
 import noData from '@/components/noData'
+import { $Message } from '../../../static/iview/base/index'
 export default {
   data () {
     return {
@@ -32,6 +34,7 @@ export default {
       loading: false,
       goodsData: [],
       hasData: false,
+      hasMore: true,
       delAction: [{
         name: '取消'
       }, {
@@ -59,6 +62,15 @@ export default {
       this.hasData = val.length > 0
     }
   },
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh () {
+    this.goodsData = []
+    this.hasMore = true
+    this.page = 0
+    this.loadMore()
+  },
   methods: {
     init () {
       this.goodsData = []
@@ -66,8 +78,15 @@ export default {
       this.page = 0
       this.loadMore()
     },
+    warning (msg) {
+      $Message({
+        content: msg,
+        type: 'warning'
+      })
+    },
     changeTab ({target: {key}}) {
-      this.current = key
+      // this.current = key
+      this.warning('该功能暂未开放')
     },
     showDel (id) {
       this.delId = id
@@ -107,6 +126,7 @@ export default {
       return data
     },
     loadMore () {
+      if (!this.hasMore) return
       this.loading = true
       wx.cloud.callFunction({
         // 云函数名称
@@ -118,6 +138,7 @@ export default {
           uid: this.uid
         }
       }).then(res => {
+        wx.stopPullDownRefresh()
         let data = res.result.data
         console.log(res)
         this.loading = false

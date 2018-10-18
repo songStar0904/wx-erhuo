@@ -107,7 +107,13 @@ export default {
     this.init()
   },
   onShow () {
-    this.init()
+    if (wx.getStorageSync('refresh')) {
+      this.goodsData = []
+      this.hasMore = true
+      this.page = 0
+      this.loadMore()
+      wx.setStorageSync('refresh', false)
+    }
   }
 }
 </script>

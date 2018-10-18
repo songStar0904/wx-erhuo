@@ -31,7 +31,7 @@
 	    		<i-input  :value="goods.price" @change="changePrice" name="price" type="number"title="现价" maxlength="10"/>
 	    		<i-input :value="goods.oprice" @change="changeOprice" name="oprice" type="number"title="原价" maxlength="10"></i-input>
 	    	</div>
-	    	<textarea class="goods-detail" :class="{hide:(isShowClassify || isShowSchool)}" :value="goods.detail" @input="changeDetail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
+	    	<textarea class="goods-detail" name="detail" :class="{hide:(isShowClassify || isShowSchool)}" :value="goods.detail" @input="changeDetail" placeholder="在此描述你的二货。如：品牌，规格，成色等信息。" />
 	    	<div class="goods-detail"  :class="{hide:(!isShowClassify && !isShowSchool)}" >
             <span v-if="goods.detail">{{goods.detail}}</span>
             <span v-else class="textarea-placeholder">在此描述你的二货。如：品牌，规格，成色等信息。</span>
@@ -43,9 +43,10 @@
 		    <i-cell title="学校" is-link :value="goods.school ? goods.school.name : '选择学校'" @iclick="showSchool"></i-cell>
 		    <!-- <i-cell title="价格" is-link :value="goods.price ? goods.price : '开价'" only-tap-footer="true"></i-cell> -->
 		</i-cell-group>
-		<i-input v-if="goods.school" :value="goods.address" @change="changeAddress" name="address" placeholder="详细地址，如：北校区X区X栋101" maxlength="50"></i-input>
+		<i-input i-class="border-b" v-if="goods.school" :value="goods.address" @change="changeAddress" name="address" placeholder="详细地址，如：北校区X区X栋101" maxlength="50"></i-input>
+    <i-input :value="goods.number" type="number" @change="changeNumber" name="number" placeholder="输入你的联系方式" maxlength="11"></i-input>
 	    <div class="issue fixed-footer">
-	      <i-button long="true" type="success" >{{goods._id ? '保存' : '发布'}}</i-button>
+	      <i-button long="true" type="success" >{{issue ? '发布' : '保存'}}</i-button>
 	      <!-- i-button 还未支持formType="submit" 用button做临时处理覆盖到i-button上-->
 	      <button formType="submit" style="height: 88rpx;position: absolute; top: 0;left: 0;right: 0;opacity: 0"></button>
 	    </div>
@@ -77,6 +78,7 @@ export default {
   data () {
     return {
       notice: '禁止发布虚假信息和危害社会安全信息。',
+      issue: false,
       goods: {
         name: '',
         uid: '',
@@ -86,7 +88,8 @@ export default {
         detail: '',
         classify: null,
         school: null,
-        address: ''
+        address: '',
+        number: null
       },
       classify: [],
       school: [],
@@ -122,6 +125,10 @@ export default {
         },
         icon: {
           required: true
+        },
+        number: {
+          required: true,
+          tel: true
         }
       },
       msgs: {
@@ -151,6 +158,10 @@ export default {
         },
         address: {
           required: '请输入详细地址'
+        },
+        number: {
+          required: '请留下联系方式哦',
+          tel: '手机号码不对'
         }
       },
       validate: null
@@ -159,6 +170,9 @@ export default {
   computed: {
     odd () {
       return this.maxlength - this.goods.name.length
+    },
+    userInfo () {
+      return wx.getStorageSync('userInfo')
     }
   },
   mounted () {
@@ -169,18 +183,27 @@ export default {
       wx.setNavigationBarTitle({
         title: '编辑'
       })
+      this.issue = false
       this.getGoods(options.id)
     } else {
+      this.issue = true
       wx.setNavigationBarTitle({
         title: '发布'
       })
     }
   },
-  onUnload () {
-    wx.setStorageSync('goods', this.goods)
+  onReady () {
+    if (this.issue) {
+      this.goods.school = this.userInfo.school
+      this.goods.address = this.userInfo.address
+      this.goods.number = this.userInfo.number
+    }
+  },
+  onHide () {
+    this.issue && wx.setStorageSync('goods', this.goods)
   },
   onShow () {
-    if (wx.getStorageSync('goods')) {
+    if (wx.getStorageSync('goods') && this.issue) {
       this.goods = wx.getStorageSync('goods')
     }
   },
@@ -319,6 +342,9 @@ export default {
     changeAddress ({target: {detail: {value}}}) {
       this.goods.address = value
     },
+    changeNumber ({target: {detail: {value}}}) {
+      this.goods.number = value
+    },
     formSubmit (e) {
       let data = this.goods
       console.log(e, data)
@@ -350,6 +376,7 @@ export default {
               school: null,
               address: ''
             }
+            wx.setStorageSync('refresh', true)
             wx.switchTab({
               url: '/pages/index/main'
             })
@@ -357,6 +384,10 @@ export default {
             wx.navigateBack({
               delta: 1,
               success () {
+                wx.showToast({
+                  title: '保存成功'
+                })
+                console.log('sss')
                 $Message({
                   content: '保存成功！',
                   type: 'success'

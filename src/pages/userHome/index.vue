@@ -6,7 +6,7 @@
         	<p>联系方式： {{userInfo.number || '无'}}</p>
         	<p>所在学校： {{userInfo.school.name || '未知'}}</p>
         </div>
-        <div slot="footer"><p>{{userInfo.sign}}</p></div>
+        <div slot="footer"><p>{{userInfo.sign || '这个人很懒，啥都没写。'}}</p></div>
       </i-card>
     </div>
     <div class="title">累计发布二货{{total}}件</div>
@@ -115,7 +115,10 @@ export default {
 </script>
 <style>
 .card-user {
-	padding: 20rpx;
+	padding: 10rpx 0rpx;
+}
+.card-user .u-card {
+	margin: 20rpx;
 }
 .u-card .content>p:first-child{
 	margin-bottom: 10rpx;

@@ -9,6 +9,7 @@ export default {
     navigationBarTitleText: '我想要的',
     navigationBarBackgroundColor: '#fff',
     navigationBarTextStyle: 'black',
+    enablePullDownRefresh: true,
     usingComponents: {
       'i-button': '/static/iview/button/index',
       'i-icon': '/static/iview/icon/index',

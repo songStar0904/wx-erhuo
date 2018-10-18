@@ -18,6 +18,7 @@ exports.main = async(event, context) => {
       },
       school,
       address,
+      number,
       _id
     } = event
     let cid = classify._id
@@ -35,7 +36,8 @@ exports.main = async(event, context) => {
             cid,
             icon,
             school,
-            address
+            address,
+            number
           }
         })
       } else {
@@ -57,7 +59,8 @@ exports.main = async(event, context) => {
           icon,
           date,
           school,
-          address
+          address,
+          number
         }
       })
     }
