@@ -297,8 +297,7 @@
       console.log(this.goods.icon[0])
       return {
         title: `这里有一件【${this.goods.name}】等你来认领`,
-        path: `/pages/goodsItem/main?id=${this.goods._id}`,
-        imageUrl: this.goods.icon[0]
+        path: `/pages/goodsItem/main?id=${this.goods._id}`
       }
     }
   }

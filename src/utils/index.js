@@ -87,11 +87,15 @@ export function formatPrice (value) {
 }
 export function getSchool (val) {
 }
+export function isLogin () {
+  // return wx.getStorageSync('userInfo') ? true : false
+}
 export default {
   formatNumber,
   formatTime,
   formatSchool,
   getCloudPath,
   getSchool,
-  formatPrice
+  formatPrice,
+  isLogin
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="issue-wrap">
+    <login-btn ></login-btn>
   	<i-notice-bar icon="systemprompt" closable>
 	    {{notice}}
 	</i-notice-bar>
@@ -74,7 +75,11 @@
 import {getCloudPath} from '@/utils/index.js'
 import WxValidate from '../../../static/utils/validate.js'
 import { $Toast, $Message } from '../../../static/iview/base/index'
+import loginBtn from '@/components/loginBtn'
 export default {
+  components: {
+    loginBtn
+  },
   data () {
     return {
       notice: '禁止发布虚假信息和危害社会安全信息。',
@@ -201,6 +206,22 @@ export default {
   },
   onHide () {
     this.issue && wx.setStorageSync('goods', this.goods)
+  },
+  onUnload () {
+    if (!this.issue) {
+      this.goods = {
+        name: '',
+        uid: '',
+        price: null,
+        oprice: null,
+        icon: [],
+        detail: '',
+        classify: null,
+        school: null,
+        address: '',
+        number: null
+      }
+    }
   },
   onShow () {
     if (wx.getStorageSync('goods') && this.issue) {
@@ -366,7 +387,7 @@ export default {
             wx.switchTab({
               url: '/pages/index/main'
             })
-          } else if (res.result.errMsg === 'document.update:ok') {
+          } else if (res.result.errMsg === 'collection.update:ok') {
             wx.navigateBack({
               delta: 1,
               success () {
@@ -394,6 +415,15 @@ export default {
 </script>
 
 <style>
+.login-btn{
+  position:absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: 10000;
+}
 .issue-wrap{
 }
 .issue-wrap .spin{

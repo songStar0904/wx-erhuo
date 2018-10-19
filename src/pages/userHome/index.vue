@@ -4,7 +4,7 @@
       <i-card  i-class="u-card" i-footer="u-footer" :title="userInfo.nickName" extra="举报" :thumb="userInfo.avatarUrl">
         <div slot="content" class="skeleton-rect content">
         	<p>联系方式： {{userInfo.number || '无'}}</p>
-        	<p>所在学校： {{userInfo.school.name || '未知'}}</p>
+        	<p>所在学校： {{userInfo.school ? userInfo.school.name : '未知'}}</p>
         </div>
         <div slot="footer"><p>{{userInfo.sign || '这个人很懒，啥都没写。'}}</p></div>
       </i-card>
@@ -35,7 +35,9 @@ export default {
         gender: 1,
         sign: '',
         _id: 0,
-        school: {}
+        school: {
+          name: 'xx'
+        }
       },
       page: 0,
       num: 5,

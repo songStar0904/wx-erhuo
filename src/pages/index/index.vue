@@ -39,6 +39,10 @@ export default {
   },
   onTabItemTap (item) {
     if (item.index === 1) {
+      wx.setTabBarItem({
+        index: 0,
+        selectedIconPath: 'static/images/home_s.png'
+      })
       wx.switchTab({
         url: '/pages/index/main',
         complete () {

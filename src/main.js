@@ -28,6 +28,19 @@ export default {
   config: {
     // 页面前带有 ^ 符号的，会被编译成首页，其他页面可以选填，我们会自动把 webpack entry 里面的入口页面加进去
     pages: ['pages/my/main', '^pages/index/main', 'pages/goodsItem/main', 'pages/issue/main', 'pages/myIssue/main', 'pages/myWant/main', 'pages/userInfo/main', 'pages/userHome/main'],
+    usingComponents: {
+      'i-button': '/static/iview/button/index',
+      'i-icon': '../static/iview/icon/index',
+      'i-cell-group': '/static/iview/cell-group/index',
+      'i-cell': '/static/iview/cell/index',
+      'i-input': '/static/iview/input/index',
+      'i-radio-group': '/static/iview/radio-group/index',
+      'i-radio': '/static/iview/radio/index',
+      'i-toast': '/static/iview/toast/index',
+      'i-action-sheet': '/static/iview/action-sheet/index',
+      'i-modal': '/static/iview/modal/index',
+      'i-message': '/static/iview/message/index'
+    },
     window: {
       backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: '#19be6b',

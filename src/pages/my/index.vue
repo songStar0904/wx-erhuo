@@ -1,29 +1,26 @@
 <template>
   <div>
+    <login-btn @setUserInfo="setUserInfo"></login-btn>
     <div class="user-box">
-      <button class="user-base-info" open-type="getUserInfo" @getuserinfo="onGetUserInfo" type="ghost" :long="true" v-if="!userInfo._id">
-        <image class="avatar" :src="userInfo.avatarUrl" mode="aspectFill"></image>
-        <view class="username">{{userInfo.nickName}}</view>
-      </button>
-      <div class="user-base-info" @click="toUrl('/pages/userInfo/main')" v-else>
+      <div class="user-base-info" @click="toUrl('/pages/userInfo/main')">
         <image class="avatar" :src="userInfo.avatarUrl" mode="aspectFill"></image>
         <view class="username">{{userInfo.nickName}}</view>
       </div>
     </div>
     <div class="main">
-      <navigator  class="main-item issue" url="/pages/myIssue/main">
+      <navigator  class="main-item issue" hover-class="none" url="/pages/myIssue/main">
         <i-icon type="document_fill" size="32" color="#19be6b" />
         <span>我发布的</span>
       </navigator >
-      <div  class="main-item said" url="" @click="warning('该功能暂未开放！')">
+      <div  class="main-item said" url="" hover-class="none" @click="warning('该功能暂未开放！')">
         <i-icon type="task_fill" size="32" color="#19be6b" />
         <span>我卖出的</span>
       </div >
-      <div  class="main-item buy" url="" @click="warning('该功能暂未开放！')">
+      <div  class="main-item buy" url="" hover-class="none" @click="warning('该功能暂未开放！')">
         <i-icon type="service_fill" size="32" color="#19be6b" />
         <span>我买到的</span>
       </div >
-      <navigator  class="main-item want" url="/pages/myWant/main">
+      <navigator  class="main-item want" hover-class="none" url="/pages/myWant/main">
         <i-icon type="tasklist_fill" size="32" color="#19be6b" />
         <span>我想要的</span>
       </navigator >
@@ -33,9 +30,9 @@
         <i-icon type="translation" slot="icon" size="20" />
         <span slot="footer">0731-5558888</span>
       </i-cell> -->
-      <button class="hide" open-type="share">
-        <i-cell title="分享朋友" url="">
-          <i-icon type="share" slot="icon" size="20" color="#19be6b"/>
+      <button class="hide" open-type="feedback">
+        <i-cell title="意见反馈" url="">
+          <i-icon type="prompt" slot="icon" size="20" />
         </i-cell>
       </button>
       <button class="hide" open-type="contact">
@@ -43,9 +40,9 @@
           <i-icon type="customerservice" slot="icon" size="20" />
         </i-cell>
       </button>
-      <button class="hide" open-type="feedback">
-        <i-cell title="意见反馈" url="">
-          <i-icon type="prompt" slot="icon" size="20" />
+      <button class="hide" open-type="share">
+        <i-cell title="分享给朋友" url="">
+          <i-icon type="share" slot="icon" size="20" color="#19be6b"/>
         </i-cell>
       </button>
       <i-cell title="关于二货街" url="" @click="isShowAbout = true">
@@ -70,6 +67,7 @@
 </template>
 <script>
 import { $Message } from '../../../static/iview/base/index'
+import loginBtn from '@/components/loginBtn'
 export default {
   data () {
     return {
@@ -85,8 +83,8 @@ export default {
       isShowAbout: false
     }
   },
-  created () {
-    this.getUserInfo()
+  components: {
+    loginBtn
   },
   onShareAppMessage (res) {
     if (res.from === 'button') {
@@ -106,27 +104,8 @@ export default {
         type: 'warning'
       })
     },
-    onGetUserInfo ({ target: { userInfo } }) {
-      this.userInfo.avatarUrl = userInfo.avatarUrl
-      this.userInfo.nickName = userInfo.nickName
-      this.userInfo.gender = userInfo.gender
-      this.saveUserInfo()
-    },
-    saveUserInfo () {
-      this.fetch('setUser', this.userInfo).then(res => {
-        console.log(res)
-        this.userInfo._id = res.result._id
-        wx.setStorageSync('userInfo', this.userInfo)
-      })
-    },
-    getUserInfo () {
-      this.fetch('getUser').then((res) => {
-        console.log(res)
-        if (res.result.data.length) {
-          this.userInfo = res.result.data[0]
-          wx.setStorageSync('userInfo', this.userInfo)
-        }
-      })
+    setUserInfo (userInfo) {
+      this.userInfo = userInfo
     },
     closeAbout () {
       this.isShowAbout = false
@@ -148,10 +127,13 @@ export default {
   background: #fff;
   height: 300rpx;
 }
-
-.user-base-info:after {
-  border-radius: 0;
-  border: none;
+.login-btn{
+  width: 100%;
+  height: 500rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
 }
 
 .user-base-info>.avatar {

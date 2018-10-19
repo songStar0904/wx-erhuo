@@ -12,7 +12,9 @@ exports.main = async (event, context) => {
       _id // 填入当前用户 openid
     }).count()
     if (hasUser.total > 0) {
-        return await db.collection('user').doc(event._id).update({
+      return await db.collection('user').where({
+          _id
+        }).update({
           // data 传入需要局部更新的数据
           data: { avatarUrl, address, nickName, number, gender, sign, school }
         })

@@ -26,7 +26,7 @@ exports.main = async(event, context) => {
     if (event._id) {
       let good = await db.collection('goods').where({_id}).field({uid: true}).get()
       if (good.data[0].uid === openId) {
-        return await db.collection('goods').doc(event._id).update({
+        return await db.collection('goods').where({ _id }).update({
           // data 传入需要局部更新的数据
           data: {
             name,
